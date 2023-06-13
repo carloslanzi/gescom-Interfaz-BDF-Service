@@ -1,0 +1,28 @@
+C:\Users\rody\Documents\Visual Studio 2013\Projects\JohnsonService1\JohnsonService1\obj\Debug\JohnsonService1.csprojResolveAssemblyReference.cache
+C:\Users\rody\Documents\Visual Studio 2013\Projects\JohnsonService1\JohnsonService1\obj\Debug\JohnsonService.ProjectInstaller.resources
+C:\Users\rody\Documents\Visual Studio 2013\Projects\JohnsonService1\JohnsonService1\obj\Debug\JohnsonService.SW.resources
+C:\Users\rody\Documents\Visual Studio 2013\Projects\JohnsonService1\JohnsonService1\obj\Debug\JohnsonService1.csproj.GenerateResource.Cache
+C:\Users\rody\Documents\Visual Studio 2013\Projects\JohnsonService1\JohnsonService1\bin\Debug\JohnsonService1.exe
+C:\Users\rody\Documents\Visual Studio 2013\Projects\JohnsonService1\JohnsonService1\bin\Debug\JohnsonService1.pdb
+C:\Users\rody\Documents\Visual Studio 2013\Projects\JohnsonService1\JohnsonService1\obj\Debug\JohnsonService1.exe
+C:\Users\rody\Documents\Visual Studio 2013\Projects\JohnsonService1\JohnsonService1\obj\Debug\JohnsonService1.pdb
+C:\Users\rody\Documents\Visual Studio 2013\Projects\JohnsonService1\JohnsonService1\obj\Debug\JohnsonService1.csproj.ResolveComReference.cache
+C:\Users\rody\Documents\Visual Studio 2013\Projects\JohnsonService\JohnsonService1\obj\Debug\JohnsonService1.csproj.ResolveComReference.cache
+C:\Users\rody\Documents\Visual Studio 2013\Projects\JohnsonService\JohnsonService1\obj\Debug\JohnsonService1.exe
+C:\Users\rody\Documents\Visual Studio 2013\Projects\JohnsonService\JohnsonService1\obj\Debug\JohnsonService1.pdb
+C:\Users\rody\Documents\Visual Studio 2013\Projects\JohnsonService\JohnsonService1\bin\Debug\JohnsonService1.exe
+C:\Users\rody\Documents\Visual Studio 2013\Projects\JohnsonService\JohnsonService1\bin\Debug\JohnsonService1.pdb
+C:\Users\rody\Documents\Visual Studio 2013\Projects\JohnsonService\JohnsonService1\obj\Debug\JohnsonService1.csprojResolveAssemblyReference.cache
+C:\Users\rody\Documents\Visual Studio 2013\Projects\JohnsonService\JohnsonService1\obj\Debug\JohnsonService.ProjectInstaller.resources
+C:\Users\rody\Documents\Visual Studio 2013\Projects\JohnsonService\JohnsonService1\obj\Debug\JohnsonService.SW.resources
+C:\Users\rody\Documents\Visual Studio 2013\Projects\JohnsonService\JohnsonService1\obj\Debug\JohnsonService1.csproj.GenerateResource.Cache
+C:\Desarrollo\JohnsonService\trunk\JohnsonService1\bin\Debug\JohnsonService1.exe
+C:\Desarrollo\JohnsonService\trunk\JohnsonService1\bin\Debug\JohnsonService1.pdb
+C:\Desarrollo\JohnsonService\trunk\JohnsonService1\obj\Debug\JohnsonService1.csproj.AssemblyReference.cache
+C:\Desarrollo\JohnsonService\trunk\JohnsonService1\obj\Debug\JohnsonService1.csproj.ResolveComReference.cache
+C:\Desarrollo\JohnsonService\trunk\JohnsonService1\obj\Debug\JohnsonService.ProjectInstaller.resources
+C:\Desarrollo\JohnsonService\trunk\JohnsonService1\obj\Debug\JohnsonService.SW.resources
+C:\Desarrollo\JohnsonService\trunk\JohnsonService1\obj\Debug\JohnsonService1.csproj.GenerateResource.cache
+C:\Desarrollo\JohnsonService\trunk\JohnsonService1\obj\Debug\JohnsonService1.csproj.CoreCompileInputs.cache
+C:\Desarrollo\JohnsonService\trunk\JohnsonService1\obj\Debug\JohnsonService1.exe
+C:\Desarrollo\JohnsonService\trunk\JohnsonService1\obj\Debug\JohnsonService1.pdb
