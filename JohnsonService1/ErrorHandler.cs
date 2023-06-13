@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace JohnsonService
+namespace BDFService
 {
     public enum ErrorType
     {
@@ -15,7 +15,7 @@ namespace JohnsonService
 
     class ErrorHandler
     {
-        private const String origen = "Servicio Johnson";
+        private const String origen = "Servicio BDF";
         private const String log = "Application"; //Aplicación para Windows en español
 
         internal static void RegistrarError(String msg, ErrorType type, Exception ex)

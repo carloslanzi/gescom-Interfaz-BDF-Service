@@ -14,7 +14,7 @@ using System.Threading;
 using System.Xml;
 using Excel = Microsoft.Office.Interop.Excel;
 
-namespace JohnsonService
+namespace BDFService
 {
     
     public partial class SW : ServiceBase
@@ -48,7 +48,7 @@ namespace JohnsonService
         {
              
             InitializeComponent();
-            this.ServiceName = "Servicio Johnson";
+            this.ServiceName = "Servicio BDF";
             path = System.IO.Path.GetDirectoryName(path_aplicacion) + "\\";
          
         
@@ -56,14 +56,14 @@ namespace JohnsonService
 
             try
             {
-                if (!System.Diagnostics.EventLog.SourceExists("Servicio Johnson","."))
-                {
+                //if (!System.Diagnostics.EventLog.SourceExists("Servicio BDF","."))
+                //{
 
-                    System.Diagnostics.EventLog.CreateEventSource("Servicio Johnson", "Application", ".");
-                }
+                //    System.Diagnostics.EventLog.CreateEventSource("Servicio BDF", "Application", ".");
+                //}
 
-                eventLog1.Source = "Servicio Johnson";
-                eventLog1.Log = "Application";
+                //eventLog1.Source = "Servicio BDF";
+                //eventLog1.Log = "Application";
 
             }
             catch (Exception ex)
@@ -89,7 +89,7 @@ namespace JohnsonService
                 this.timer.AutoReset = true;
                 this.timer.Elapsed += new System.Timers.ElapsedEventHandler(this.timer_Elapsed);
                 this.timer.Start();
-                System.Diagnostics.EventLog.WriteEntry("Servicio Johnson", "Iniciando Rutina " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt"), EventLogEntryType.Information);
+                System.Diagnostics.EventLog.WriteEntry("Servicio BDF", "Iniciando Rutina " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt"), EventLogEntryType.Information);
 
         
 	
@@ -156,7 +156,7 @@ namespace JohnsonService
                         ActualizarFechaEnvio();
                         AvanzarNumeracion();
 
-                        System.Diagnostics.EventLog.WriteEntry("Servicio Johnson", "Envio Ejecutado Correctamente", EventLogEntryType.Information);
+                        System.Diagnostics.EventLog.WriteEntry("Servicio BDF", "Envio Ejecutado Correctamente", EventLogEntryType.Information);
 
                     }
 
@@ -173,12 +173,12 @@ namespace JohnsonService
             catch (Exception ex)
             {
                 ErrorHandler.ManejarError("Ha Ocurrido un error en la ejecucion total del servicio", ErrorType.Critical, ex);
-                //System.Diagnostics.EventLog.WriteEntry("Servicio Johnson", ex.Message + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt"), EventLogEntryType.Error);
+                //System.Diagnostics.EventLog.WriteEntry("Servicio BDF", ex.Message + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt"), EventLogEntryType.Error);
             }
 
-            
 
-            
+
+
 
         }
 
@@ -236,7 +236,7 @@ namespace JohnsonService
                 SqlConnection Conection = new SqlConnection(cadena);
 
 
-                string SelectConfiguracion = "update johnson_configuracion set ult_envio =  Convert(varchar,getdate(),103)";
+                string SelectConfiguracion = "update BDF_configuracion set ult_envio =  Convert(varchar,getdate(),103)";
                 SqlCommand commandConfiguracion = new SqlCommand(SelectConfiguracion, Conection);
 
 
@@ -380,7 +380,7 @@ namespace JohnsonService
                 mensaje = mensaje.Replace(";", "\r\n");
 
                 ErrorHandler.ManejarError(mensaje, ErrorType.Critical, ex);
-                System.Diagnostics.EventLog.WriteEntry("Servicio Johnson", mensaje, EventLogEntryType.Error);
+                System.Diagnostics.EventLog.WriteEntry("Servicio BDF", mensaje, EventLogEntryType.Error);
 
                 //poner que guarde un mensaje en el registro
                 //MessageBox.Show(mensaje);
@@ -457,7 +457,7 @@ namespace JohnsonService
                 mensaje = mensaje.Replace(";", "\r\n");
 
                 ErrorHandler.ManejarError(mensaje, ErrorType.Critical, ex);
-                System.Diagnostics.EventLog.WriteEntry("Servicio Johnson", mensaje, EventLogEntryType.Error);
+                System.Diagnostics.EventLog.WriteEntry("Servicio BDF", mensaje, EventLogEntryType.Error);
 
                 //poner que guarde un mensaje en el registro
                 //MessageBox.Show(mensaje);
@@ -487,9 +487,9 @@ namespace JohnsonService
                 Conection.Open();
                 
                 // Utilizar una variable para almacenar la instrucción SQL.
-                string SelectString = "select (select codigo_distribuidor from Johnson_Configuracion where codigo = 1) IdDistribuidor, (select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='JJ' and num.letra='X' and num.empresa_id=1) IdPaquete,  stockhistorico.fecha fecha , scj_sinonimos.CodigoSinonimo IdProducto, case when sum(stocktot) > 0 then round(sum(cast(cast(stocktot as numeric(18,2))/cast(uxbcompra as numeric(18,2)) as numeric(18,2))),2) else 0 end cantidad  from stockhistorico, articulo, scj_sinonimos where stockhistorico.Articulo_Codigo= articulo.codigo and scj_sinonimos.CodigoArt=articulo.codigo and   stockhistorico.fecha = Convert(varchar,DATEADD(d,-1,getdate()),103) and deposito_id = 0 and articulo.prove =" + codigo_proveedor + " and scj_sinonimos.CodigoSinonimo <> '' and articulo.baja = 0 group by scj_sinonimos.CodigoSinonimo, stockhistorico.fecha ";
+                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) IdDistribuidor, (select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='JJ' and num.letra='X' and num.empresa_id=1) IdPaquete,  stockhistorico.fecha fecha , scj_sinonimos.CodigoSinonimo IdProducto, case when sum(stocktot) > 0 then round(sum(cast(cast(stocktot as numeric(18,2))/cast(uxbcompra as numeric(18,2)) as numeric(18,2))),2) else 0 end cantidad  from stockhistorico, articulo, scj_sinonimos where stockhistorico.Articulo_Codigo= articulo.codigo and scj_sinonimos.CodigoArt=articulo.codigo and   stockhistorico.fecha = Convert(varchar,DATEADD(d,-1,getdate()),103) and deposito_id = 0 and articulo.prove =" + codigo_proveedor + " and scj_sinonimos.CodigoSinonimo <> '' and articulo.baja = 0 group by scj_sinonimos.CodigoSinonimo, stockhistorico.fecha ";
                 SqlCommand sqlcommand = new SqlCommand(SelectString, Conection);
-                System.Diagnostics.EventLog.WriteEntry("Servicio Johnson", SelectString, EventLogEntryType.Information);
+                System.Diagnostics.EventLog.WriteEntry("Servicio BDF", SelectString, EventLogEntryType.Information);
 
 
                 
@@ -644,7 +644,7 @@ namespace JohnsonService
 
 
                 string pathfull = path + usuario + "_inv_" + DateTime.Today.AddDays(-1).ToString("yyyyMMdd")  + ".xlsx";
-                System.Diagnostics.EventLog.WriteEntry("Servicio Johnson", pathfull, EventLogEntryType.Information);
+                System.Diagnostics.EventLog.WriteEntry("Servicio BDF", pathfull, EventLogEntryType.Information);
                 LibroExcel.SaveAs(pathfull, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive, Excel.XlSaveConflictResolution.xlLocalSessionChanges);
                 LibroExcel.Close(true);
 
@@ -687,11 +687,11 @@ namespace JohnsonService
                 Conection.Open();
 
                 //comentario para compilar a asdsadsa
-                string SelectString = "select (select codigo_distribuidor from Johnson_Configuracion where codigo = 1) idDistribuidor , (select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='JJ' and num.letra='X' and num.empresa_id=1) IdPaquete, v.fecha fecha , v.comprobante NroComprobante, '' IdPedidoDinesys, case left(referencia,2) when 'NC' THEN referencia END NroComprobanteAsociado,  cod_cli IdCliente, Jonhson_Tipos_Cliente.Codigo IdTipoDeCliente,  cod_ven IdVendedor, scj.codigoSinonimo IdProducto , round(sum(iv.Cantidad*art.uxb/art.uxbcompra),2) Cantidad, case WHEN  sum(iv.Cantidad*art.uxb/art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('FA', 'PE')  THEN 'FC' when sum(iv.Cantidad* art.uxb/ art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('ND') then 'ND' else 'NC' END Tipo,     motivo.descripcion MotivoNC  from numeracion, venta v inner join  item_venta iv on v.comprobante=iv.comprobante  and v.fecha = iv.fecha and v.empresa_id= iv.empresa_id left join motivo on v.motivodev = motivo.codigo  left join articulo art on iv.cod_art=art.codigo inner join scj_sinonimos scj on scj.CodigoArt=art.codigo inner join cliente cli on cli.codigo=v.cod_cli inner join ramo on cli.ramo=ramo.codigo inner join Ramo_Vs_RamoJohnson on Ramo_Vs_RamoJohnson.codigo=ramo.codigo inner join Jonhson_Tipos_Cliente on Jonhson_Tipos_Cliente.Id=Ramo_Vs_RamoJohnson.IDJohnson where TipoNum = 'JJ' and v.fecha = Convert(varchar,DATEADD(d,-1,getdate()),103) and left(v.comprobante, 2) in ('FA','NC','ND','PE')  and art.prove =1 and scj.CodigoSinonimo <> '' and art.baja = 0 and fecha_factura is not null   group by v.fecha, v.comprobante, v.referencia, v.cod_cli, v.cod_ven, scj.CodigoSinonimo, motivo.descripcion, Jonhson_Tipos_Cliente.Codigo having sum(iv.Cantidad*art.uxb/art.uxbcompra) <> 0 ";
+                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) idDistribuidor , (select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='JJ' and num.letra='X' and num.empresa_id=1) IdPaquete, v.fecha fecha , v.comprobante NroComprobante, '' IdPedidoDinesys, case left(referencia,2) when 'NC' THEN referencia END NroComprobanteAsociado,  cod_cli IdCliente, Jonhson_Tipos_Cliente.Codigo IdTipoDeCliente,  cod_ven IdVendedor, scj.codigoSinonimo IdProducto , round(sum(iv.Cantidad*art.uxb/art.uxbcompra),2) Cantidad, case WHEN  sum(iv.Cantidad*art.uxb/art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('FA', 'PE')  THEN 'FC' when sum(iv.Cantidad* art.uxb/ art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('ND') then 'ND' else 'NC' END Tipo,     motivo.descripcion MotivoNC  from numeracion, venta v inner join  item_venta iv on v.comprobante=iv.comprobante  and v.fecha = iv.fecha and v.empresa_id= iv.empresa_id left join motivo on v.motivodev = motivo.codigo  left join articulo art on iv.cod_art=art.codigo inner join scj_sinonimos scj on scj.CodigoArt=art.codigo inner join cliente cli on cli.codigo=v.cod_cli inner join ramo on cli.ramo=ramo.codigo inner join Ramo_Vs_RamoBDF on Ramo_Vs_RamoBDF.codigo=ramo.codigo inner join Jonhson_Tipos_Cliente on Jonhson_Tipos_Cliente.Id=Ramo_Vs_RamoBDF.IDBDF where TipoNum = 'JJ' and v.fecha = Convert(varchar,DATEADD(d,-1,getdate()),103) and left(v.comprobante, 2) in ('FA','NC','ND','PE')  and art.prove =1 and scj.CodigoSinonimo <> '' and art.baja = 0 and fecha_factura is not null   group by v.fecha, v.comprobante, v.referencia, v.cod_cli, v.cod_ven, scj.CodigoSinonimo, motivo.descripcion, Jonhson_Tipos_Cliente.Codigo having sum(iv.Cantidad*art.uxb/art.uxbcompra) <> 0 ";
                 SqlCommand sqlcommand = new SqlCommand(SelectString, Conection);
                 sqlcommand.CommandTimeout = 3600;
                 SqlDataAdapter Adaptador = new SqlDataAdapter(SelectString, Conection);
-                System.Diagnostics.EventLog.WriteEntry("Servicio Johnson", SelectString, EventLogEntryType.Information);
+                System.Diagnostics.EventLog.WriteEntry("Servicio BDF", SelectString, EventLogEntryType.Information);
 
 
                 DataSet DS = new DataSet();
@@ -858,7 +858,7 @@ namespace JohnsonService
 
 
                 string pathfull = path + usuario + "_fac_" + DateTime.Today.AddDays(-1).ToString("yyyyMMdd")  + ".xlsx";
-                System.Diagnostics.EventLog.WriteEntry("Servicio Johnson", pathfull, EventLogEntryType.Information);
+                System.Diagnostics.EventLog.WriteEntry("Servicio BDF", pathfull, EventLogEntryType.Information);
                 LibroExcel.SaveAs(pathfull, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive, Excel.XlSaveConflictResolution.xlLocalSessionChanges);
                 //LibroExcel.SaveAs("E:\\dibert_fac_" + DateTime.Today.ToString("yyyyMMdd") + ".xlsx", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive, Excel.XlSaveConflictResolution.xlLocalSessionChanges);
                 LibroExcel.Close(true);
@@ -923,7 +923,7 @@ namespace JohnsonService
                 mensaje = mensaje.Replace(";", "\r\n");
 
                 ErrorHandler.ManejarError(mensaje, ErrorType.Critical, ex);
-                System.Diagnostics.EventLog.WriteEntry("Servicio Johnson", mensaje, EventLogEntryType.Error);
+                System.Diagnostics.EventLog.WriteEntry("Servicio BDF", mensaje, EventLogEntryType.Error);
 
                 //poner que guarde un mensaje en el registro
                 //MessageBox.Show(mensaje);
@@ -973,7 +973,7 @@ namespace JohnsonService
                 if (responseStream != null) { using (var reader = new StreamReader(responseStream)) { mensaje = reader.ReadToEnd(); } }
                 mensaje = mensaje.Replace(";", "\r\n");
                 ErrorHandler.ManejarError(mensaje, ErrorType.Critical, ex);
-                System.Diagnostics.EventLog.WriteEntry("Servicio Johnson", mensaje, EventLogEntryType.Error);
+                System.Diagnostics.EventLog.WriteEntry("Servicio BDF", mensaje, EventLogEntryType.Error);
 
                 //poner que gaurde un mensaje en el
                 //MessageBox.Show(mensaje);
@@ -1003,9 +1003,9 @@ namespace JohnsonService
                 Conection.Open();
 
                 // Utilizar una variable para almacenar la instrucción SQL.
-                string SelectString = "select (select codigo_distribuidor from Johnson_Configuracion where codigo = 1) IdDistribuidor, (select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='JJ' and num.letra='X' and num.empresa_id=1) IdPaquete,  stockhistorico.fecha fecha , scj_sinonimos.CodigoSinonimo IdProducto, case when sum(stocktot) > 0 then round(sum(cast(cast(stocktot as numeric(18,2))/cast(uxbcompra as numeric(18,2)) as numeric(18,2))),2) else 0 end cantidad  from stockhistorico, articulo, scj_sinonimos where stockhistorico.Articulo_Codigo= articulo.codigo and scj_sinonimos.CodigoArt=articulo.codigo and   stockhistorico.fecha = Convert(varchar,DATEADD(d," + vDias + ",getdate()),103) and deposito_id = 0 and articulo.prove =" + codigo_proveedor + " and scj_sinonimos.CodigoSinonimo <> '' and articulo.baja = 0 group by scj_sinonimos.CodigoSinonimo, stockhistorico.fecha ";
+                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) IdDistribuidor, (select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='JJ' and num.letra='X' and num.empresa_id=1) IdPaquete,  stockhistorico.fecha fecha , scj_sinonimos.CodigoSinonimo IdProducto, case when sum(stocktot) > 0 then round(sum(cast(cast(stocktot as numeric(18,2))/cast(uxbcompra as numeric(18,2)) as numeric(18,2))),2) else 0 end cantidad  from stockhistorico, articulo, scj_sinonimos where stockhistorico.Articulo_Codigo= articulo.codigo and scj_sinonimos.CodigoArt=articulo.codigo and   stockhistorico.fecha = Convert(varchar,DATEADD(d," + vDias + ",getdate()),103) and deposito_id = 0 and articulo.prove =" + codigo_proveedor + " and scj_sinonimos.CodigoSinonimo <> '' and articulo.baja = 0 group by scj_sinonimos.CodigoSinonimo, stockhistorico.fecha ";
                 SqlCommand sqlcommand = new SqlCommand(SelectString, Conection);
-                System.Diagnostics.EventLog.WriteEntry("Servicio Johnson", SelectString, EventLogEntryType.Information);
+                System.Diagnostics.EventLog.WriteEntry("Servicio BDF", SelectString, EventLogEntryType.Information);
 
 
 
@@ -1159,7 +1159,7 @@ namespace JohnsonService
 
 
                 string pathfull = path + usuario + "_inv_" + DateTime.Today.AddDays(vDias).ToString("yyyyMMdd") + ".xlsx";
-                System.Diagnostics.EventLog.WriteEntry("Servicio Johnson", pathfull, EventLogEntryType.Information);
+                System.Diagnostics.EventLog.WriteEntry("Servicio BDF", pathfull, EventLogEntryType.Information);
                 LibroExcel.SaveAs(pathfull, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive, Excel.XlSaveConflictResolution.xlLocalSessionChanges);
                 LibroExcel.Close(true);
 
@@ -1204,11 +1204,11 @@ namespace JohnsonService
                 Conection.Open();
 
                 //comentario para compilar a asdsadsa
-                string SelectString = "select (select codigo_distribuidor from Johnson_Configuracion where codigo = 1) idDistribuidor , (select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='JJ' and num.letra='X' and num.empresa_id=1) IdPaquete, v.fecha fecha , v.comprobante NroComprobante, '' IdPedidoDinesys, case left(referencia,2) when 'NC' THEN referencia END NroComprobanteAsociado,  cod_cli IdCliente, Jonhson_Tipos_Cliente.Codigo IdTipoDeCliente,  cod_ven IdVendedor, scj.codigoSinonimo IdProducto , round(sum(iv.Cantidad*art.uxb/art.uxbcompra),2) Cantidad, case WHEN  sum(iv.Cantidad*art.uxb/art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('FA', 'PE')  THEN 'FC' when sum(iv.Cantidad* art.uxb/ art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('ND') then 'ND' else 'NC' END Tipo,     motivo.descripcion MotivoNC  from numeracion, venta v inner join  item_venta iv on v.comprobante=iv.comprobante  and v.fecha = iv.fecha and v.empresa_id= iv.empresa_id left join motivo on v.motivodev = motivo.codigo  left join articulo art on iv.cod_art=art.codigo inner join scj_sinonimos scj on scj.CodigoArt=art.codigo inner join cliente cli on cli.codigo=v.cod_cli inner join ramo on cli.ramo=ramo.codigo inner join Ramo_Vs_RamoJohnson on Ramo_Vs_RamoJohnson.codigo=ramo.codigo inner join Jonhson_Tipos_Cliente on Jonhson_Tipos_Cliente.Id=Ramo_Vs_RamoJohnson.IDJohnson where TipoNum = 'JJ' and v.fecha = Convert(varchar,DATEADD(d," + vDias + ",getdate()),103) and left(v.comprobante, 2) in ('FA','NC','ND','PE')  and art.prove =1 and scj.CodigoSinonimo <> '' and art.baja = 0 and fecha_factura is not null   group by v.fecha, v.comprobante, v.referencia, v.cod_cli, v.cod_ven, scj.CodigoSinonimo, motivo.descripcion, Jonhson_Tipos_Cliente.Codigo having sum(iv.Cantidad*art.uxb/art.uxbcompra) <> 0 ";
+                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) idDistribuidor , (select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='JJ' and num.letra='X' and num.empresa_id=1) IdPaquete, v.fecha fecha , v.comprobante NroComprobante, '' IdPedidoDinesys, case left(referencia,2) when 'NC' THEN referencia END NroComprobanteAsociado,  cod_cli IdCliente, Jonhson_Tipos_Cliente.Codigo IdTipoDeCliente,  cod_ven IdVendedor, scj.codigoSinonimo IdProducto , round(sum(iv.Cantidad*art.uxb/art.uxbcompra),2) Cantidad, case WHEN  sum(iv.Cantidad*art.uxb/art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('FA', 'PE')  THEN 'FC' when sum(iv.Cantidad* art.uxb/ art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('ND') then 'ND' else 'NC' END Tipo,     motivo.descripcion MotivoNC  from numeracion, venta v inner join  item_venta iv on v.comprobante=iv.comprobante  and v.fecha = iv.fecha and v.empresa_id= iv.empresa_id left join motivo on v.motivodev = motivo.codigo  left join articulo art on iv.cod_art=art.codigo inner join scj_sinonimos scj on scj.CodigoArt=art.codigo inner join cliente cli on cli.codigo=v.cod_cli inner join ramo on cli.ramo=ramo.codigo inner join Ramo_Vs_RamoBDF on Ramo_Vs_RamoBDF.codigo=ramo.codigo inner join Jonhson_Tipos_Cliente on Jonhson_Tipos_Cliente.Id=Ramo_Vs_RamoBDF.IDBDF where TipoNum = 'JJ' and v.fecha = Convert(varchar,DATEADD(d," + vDias + ",getdate()),103) and left(v.comprobante, 2) in ('FA','NC','ND','PE')  and art.prove =1 and scj.CodigoSinonimo <> '' and art.baja = 0 and fecha_factura is not null   group by v.fecha, v.comprobante, v.referencia, v.cod_cli, v.cod_ven, scj.CodigoSinonimo, motivo.descripcion, Jonhson_Tipos_Cliente.Codigo having sum(iv.Cantidad*art.uxb/art.uxbcompra) <> 0 ";
                 SqlCommand sqlcommand = new SqlCommand(SelectString, Conection);
                 sqlcommand.CommandTimeout = 3600;
                 SqlDataAdapter Adaptador = new SqlDataAdapter(SelectString, Conection);
-                System.Diagnostics.EventLog.WriteEntry("Servicio Johnson", SelectString, EventLogEntryType.Information);
+                System.Diagnostics.EventLog.WriteEntry("Servicio BDF", SelectString, EventLogEntryType.Information);
 
 
                 DataSet DS = new DataSet();
@@ -1376,7 +1376,7 @@ namespace JohnsonService
 
 
                 string pathfull = path + usuario + "_fac_" + DateTime.Today.AddDays(vDias).ToString("yyyyMMdd") + ".xlsx";
-                System.Diagnostics.EventLog.WriteEntry("Servicio Johnson", pathfull, EventLogEntryType.Information);
+                System.Diagnostics.EventLog.WriteEntry("Servicio BDF", pathfull, EventLogEntryType.Information);
                 LibroExcel.SaveAs(pathfull, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive, Excel.XlSaveConflictResolution.xlLocalSessionChanges);
                 //LibroExcel.SaveAs("E:\\dibert_fac_" + DateTime.Today.ToString("yyyyMMdd") + ".xlsx", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive, Excel.XlSaveConflictResolution.xlLocalSessionChanges);
                 LibroExcel.Close(true);
@@ -1405,14 +1405,14 @@ namespace JohnsonService
                 //guardo el connection string
                 string cadena;
                 cadena = "Server=" + serverSQL + " ;Database=" + baseSQL + ";User Id=" + usuarioSQL + " ;Password=" + contraseñaSQL + ";";
-             
+
                 //comento porque ya no necesito esto.
-                //System.Diagnostics.EventLog.WriteEntry("Servicio Johnson", "cadena de conexion:" + cadena + " Fecha:" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt"), EventLogEntryType.Information);
+                //System.Diagnostics.EventLog.WriteEntry("Servicio BDF", "cadena de conexion:" + cadena + " Fecha:" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt"), EventLogEntryType.Information);
                 // Crear un objeto SqlConnection, y luego pasar la ConnectionString al constructor.            
                 SqlConnection Conection = new SqlConnection(cadena);
 
 
-                string SelectConfiguracion = "select * from Johnson_Configuracion where codigo = 1";
+                string SelectConfiguracion = "select * from BDF_Configuracion where codigo = 1";
                 SqlCommand commandConfiguracion = new SqlCommand(SelectConfiguracion, Conection);
 
 
@@ -1447,7 +1447,7 @@ namespace JohnsonService
                 }
                 else
                 {
-                    System.Diagnostics.EventLog.WriteEntry("Servicio Johnson", "El distribuidor no tiene seteado los datos de configuracion" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt"), EventLogEntryType.Error);
+                    System.Diagnostics.EventLog.WriteEntry("Servicio BDF", "El distribuidor no tiene seteado los datos de configuracion" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt"), EventLogEntryType.Error);
                 }
                 reader.Close();
                 Conection.Close();
@@ -1517,12 +1517,14 @@ namespace JohnsonService
 
             this.timer.Stop();
             this.timer = null;
-            System.Diagnostics.EventLog.WriteEntry("Servicio Johnson", "Rutina de Ejecutar Terminada " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt"), EventLogEntryType.Information);
+            System.Diagnostics.EventLog.WriteEntry("Servicio BDF", "Rutina de Ejecutar Terminada " + DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss tt"), EventLogEntryType.Information);
 
 
         }
 
+        private void eventLog1_EntryWritten(object sender, EntryWrittenEventArgs e)
+        {
 
-
+        }
     }
 }

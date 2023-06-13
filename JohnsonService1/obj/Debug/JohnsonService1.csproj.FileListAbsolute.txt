@@ -26,3 +26,13 @@ C:\Desarrollo\JohnsonService\trunk\JohnsonService1\obj\Debug\JohnsonService1.csp
 C:\Desarrollo\JohnsonService\trunk\JohnsonService1\obj\Debug\JohnsonService1.csproj.CoreCompileInputs.cache
 C:\Desarrollo\JohnsonService\trunk\JohnsonService1\obj\Debug\JohnsonService1.exe
 C:\Desarrollo\JohnsonService\trunk\JohnsonService1\obj\Debug\JohnsonService1.pdb
+C:\Desarrollo\BDFService\trunk\JohnsonService1\bin\Debug\JohnsonService1.exe
+C:\Desarrollo\BDFService\trunk\JohnsonService1\bin\Debug\JohnsonService1.pdb
+C:\Desarrollo\BDFService\trunk\JohnsonService1\obj\Debug\JohnsonService1.csproj.AssemblyReference.cache
+C:\Desarrollo\BDFService\trunk\JohnsonService1\obj\Debug\JohnsonService1.csproj.ResolveComReference.cache
+C:\Desarrollo\BDFService\trunk\JohnsonService1\obj\Debug\JohnsonService.ProjectInstaller.resources
+C:\Desarrollo\BDFService\trunk\JohnsonService1\obj\Debug\JohnsonService.SW.resources
+C:\Desarrollo\BDFService\trunk\JohnsonService1\obj\Debug\JohnsonService1.csproj.GenerateResource.cache
+C:\Desarrollo\BDFService\trunk\JohnsonService1\obj\Debug\JohnsonService1.csproj.CoreCompileInputs.cache
+C:\Desarrollo\BDFService\trunk\JohnsonService1\obj\Debug\JohnsonService1.exe
+C:\Desarrollo\BDFService\trunk\JohnsonService1\obj\Debug\JohnsonService1.pdb

@@ -1,4 +1,4 @@
-﻿namespace JohnsonService
+﻿namespace BDFService
 {
     partial class SW
     {
@@ -36,14 +36,12 @@
             // 
             // eventLog1
             // 
-
-
-
             this.eventLog1.Log = "Application";
+            this.eventLog1.EntryWritten += new System.Diagnostics.EntryWrittenEventHandler(this.eventLog1_EntryWritten);
             // 
             // SW
             // 
-            this.ServiceName = "Servicio Johnson";
+            this.ServiceName = "Servicio BDF";
             ((System.ComponentModel.ISupportInitialize)(this.eventLog1)).EndInit();
 
         }

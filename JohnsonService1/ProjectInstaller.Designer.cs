@@ -1,4 +1,4 @@
-﻿namespace JohnsonService
+﻿namespace BDFService
 {
     partial class ProjectInstaller
     {
@@ -39,9 +39,9 @@
             // 
             // serviceInstaller1
             // 
-            this.serviceInstaller1.Description = "Controla la subida de Venta e Inventario de Johnson";
-            this.serviceInstaller1.DisplayName = "Servicio Johnson";
-            this.serviceInstaller1.ServiceName = "Johnson Service";
+            this.serviceInstaller1.Description = "Controla la subida de Venta e Inventario de BDF";
+            this.serviceInstaller1.DisplayName = "Servicio BDF";
+            this.serviceInstaller1.ServiceName = "BDF Service";
             this.serviceInstaller1.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 
             // ProjectInstaller
