@@ -1123,11 +1123,23 @@ namespace BDFService
                 Conection.Open();
 
                 //comentario para compilar a asdsadsa
-                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) idDistribuidor , (select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='JJ' and num.letra='X' and num.empresa_id=1) IdPaquete, v.fecha fecha , v.comprobante NroComprobante, '' IdPedidoDinesys, case left(referencia,2) when 'NC' THEN referencia END NroComprobanteAsociado,  cod_cli IdCliente, Jonhson_Tipos_Cliente.Codigo IdTipoDeCliente,  cod_ven IdVendedor, scj.codigoSinonimo IdProducto , round(sum(iv.Cantidad*art.uxb/art.uxbcompra),2) Cantidad, case WHEN  sum(iv.Cantidad*art.uxb/art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('FA', 'PE')  THEN 'FC' when sum(iv.Cantidad* art.uxb/ art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('ND') then 'ND' else 'NC' END Tipo,     motivo.descripcion MotivoNC  from numeracion, venta v inner join  item_venta iv on v.comprobante=iv.comprobante  and v.fecha = iv.fecha and v.empresa_id= iv.empresa_id left join motivo on v.motivodev = motivo.codigo  left join articulo art on iv.cod_art=art.codigo inner join scj_sinonimos scj on scj.CodigoArt=art.codigo inner join cliente cli on cli.codigo=v.cod_cli inner join ramo on cli.ramo=ramo.codigo inner join Ramo_Vs_RamoBDF on Ramo_Vs_RamoBDF.codigo=ramo.codigo inner join Jonhson_Tipos_Cliente on Jonhson_Tipos_Cliente.Id=Ramo_Vs_RamoBDF.IDBDF where TipoNum = 'JJ' and v.fecha = Convert(varchar,DATEADD(d," + vDias + ",getdate()),103) and left(v.comprobante, 2) in ('FA','NC','ND','PE')  and art.prove =1 and scj.CodigoSinonimo <> '' and art.baja = 0 and fecha_factura is not null   group by v.fecha, v.comprobante, v.referencia, v.cod_cli, v.cod_ven, scj.CodigoSinonimo, motivo.descripcion, Jonhson_Tipos_Cliente.Codigo having sum(iv.Cantidad*art.uxb/art.uxbcompra) <> 0 ";
+                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) idDistribuidor , ";
+                    SelectString = SelectString + $"(select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and num.empresa_id=1) IdPaquete, ";
+                SelectString = SelectString + $"v.fecha fecha , v.comprobante NroComprobante, '' IdPedidoDinesys, case left(referencia,2) when 'NC' THEN referencia END NroComprobanteAsociado,  cod_cli IdCliente, ";
+                SelectString = SelectString + $"bdf_Tipos_Cliente.Codigo IdTipoDeCliente,  cod_ven IdVendedor, scj.codigoSinonimo IdProducto , round(sum(iv.Cantidad*art.uxb/art.uxbcompra),2) Cantidad, ";
+                SelectString = SelectString + $"case WHEN  sum(iv.Cantidad*art.uxb/art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('FA', 'PE')  THEN 'FC' when sum(iv.Cantidad* art.uxb/ art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('ND') then 'ND' else 'NC' END Tipo,    ";
+                SelectString = SelectString + $" motivo.descripcion MotivoNC  from numeracion, venta v inner join  item_venta iv on v.comprobante=iv.comprobante  and v.fecha = iv.fecha and v.empresa_id= iv.empresa_id ";
+                SelectString = SelectString + $"left join motivo on v.motivodev = motivo.codigo  left join articulo art on iv.cod_art=art.codigo inner join scj_sinonimos scj on scj.CodigoArt=art.codigo ";
+                SelectString = SelectString + $"inner join cliente cli on cli.codigo=v.cod_cli inner join ramo on cli.ramo=ramo.codigo LEFT join Ramo_Vs_RamoBDF on Ramo_Vs_RamoBDF.codigo=ramo.codigo ";
+                SelectString = SelectString + $"left join bdf_Tipos_Cliente on bdf_Tipos_Cliente.Id=Ramo_Vs_RamoBDF.IDBDF ";
+                SelectString = SelectString + $"where TipoNum = 'BD' and v.fecha = Convert(varchar,DATEADD(d," + vDias + ",getdate()),103) ";
+                SelectString = SelectString + $"and left(v.comprobante, 2) in ('FA','NC','ND','PE')  and art.prove =1 and scj.CodigoSinonimo <> '' and art.baja = 0 and fecha_factura is not null   ";
+                SelectString = SelectString + $"group by v.fecha, v.comprobante, v.referencia, v.cod_cli, v.cod_ven, scj.CodigoSinonimo, motivo.descripcion, bdf_Tipos_Cliente.Codigo having sum(iv.Cantidad*art.uxb/art.uxbcompra) <> 0 ";
+                Debug.Write(SelectString);
                 SqlCommand sqlcommand = new SqlCommand(SelectString, Conection);
                 sqlcommand.CommandTimeout = 3600;
                 SqlDataAdapter Adaptador = new SqlDataAdapter(SelectString, Conection);
-                System.Diagnostics.EventLog.WriteEntry("Servicio BDF", SelectString, EventLogEntryType.Information);
+                //System.Diagnostics.EventLog.WriteEntry("Servicio BDF", SelectString, EventLogEntryType.Information);
 
 
                 DataSet DS = new DataSet();
