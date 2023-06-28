@@ -1,0 +1,10 @@
+C:\Desarrollo\BDFService\trunk\JohnsonService1\bin\Debug\BDFService1.exe
+C:\Desarrollo\BDFService\trunk\JohnsonService1\bin\Debug\BDFService1.pdb
+C:\Desarrollo\BDFService\trunk\JohnsonService1\obj\Debug\BDFService1.csproj.ResolveComReference.cache
+C:\Desarrollo\BDFService\trunk\JohnsonService1\obj\Debug\BDFService1.csproj.GenerateResource.cache
+C:\Desarrollo\BDFService\trunk\JohnsonService1\obj\Debug\BDFService1.csproj.CoreCompileInputs.cache
+C:\Desarrollo\BDFService\trunk\JohnsonService1\obj\Debug\BDFService1.exe
+C:\Desarrollo\BDFService\trunk\JohnsonService1\obj\Debug\BDFService1.pdb
+C:\Desarrollo\BDFService\trunk\JohnsonService1\obj\Debug\BDFService.SW.resources
+C:\Desarrollo\BDFService\trunk\JohnsonService1\obj\Debug\BDFService.ProjectInstaller.resources
+C:\Desarrollo\BDFService\trunk\JohnsonService1\obj\Debug\BDFService1.csproj.AssemblyReference.cache

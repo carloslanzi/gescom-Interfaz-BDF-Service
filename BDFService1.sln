@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33529.622
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BDFService1", "JohnsonService1\BDFService1.csproj", "{E7B0C6CF-F405-4240-808B-83CCA7D19767}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "InstaladorJohnson", "InstaladorJohnson\InstaladorJohnson.vdproj", "{7BDE7CE3-96B0-4ED2-AEB9-7584B6D6054C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E7B0C6CF-F405-4240-808B-83CCA7D19767}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7B0C6CF-F405-4240-808B-83CCA7D19767}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7B0C6CF-F405-4240-808B-83CCA7D19767}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7B0C6CF-F405-4240-808B-83CCA7D19767}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BDE7CE3-96B0-4ED2-AEB9-7584B6D6054C}.Debug|Any CPU.ActiveCfg = Debug
+		{7BDE7CE3-96B0-4ED2-AEB9-7584B6D6054C}.Debug|Any CPU.Build.0 = Debug
+		{7BDE7CE3-96B0-4ED2-AEB9-7584B6D6054C}.Release|Any CPU.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1ECAF626-B9FB-4990-A637-0E273ECADFAF}
+	EndGlobalSection
+EndGlobal
