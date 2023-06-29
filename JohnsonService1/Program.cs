@@ -64,8 +64,9 @@ namespace BDFService
 
 
                     //genero los archivos de 3 dias antes si no existen
-                    GenerarExcelFacturacion(-3);
-                    GenerarExcelInventario(-3);
+                    GenerarExcelFacturacion(-1);
+                    GenerarExcelInventario(-1);
+                    GenerarExcelClientes(-1);
 
                     //genero los archivos de 2 dias antes si no existen
                     GenerarExcelFacturacion(-2);
@@ -406,7 +407,7 @@ namespace BDFService
                 Conection.Open();
 
                 // Utilizar una variable para almacenar la instrucción SQL.
-                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) IdDistribuidor, (select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='JJ' and num.letra='X' and num.empresa_id=1) IdPaquete,  stockhistorico.fecha fecha , scj_sinonimos.CodigoSinonimo IdProducto, case when sum(stocktot) > 0 then round(sum(cast(cast(stocktot as numeric(18,2))/cast(uxbcompra as numeric(18,2)) as numeric(18,2))),2) else 0 end cantidad  from stockhistorico, articulo, scj_sinonimos where stockhistorico.Articulo_Codigo= articulo.codigo and scj_sinonimos.CodigoArt=articulo.codigo and   stockhistorico.fecha = Convert(varchar,DATEADD(d,-1,getdate()),103) and deposito_id = 0 and articulo.prove =" + codigo_proveedor + " and scj_sinonimos.CodigoSinonimo <> '' and articulo.baja = 0 group by scj_sinonimos.CodigoSinonimo, stockhistorico.fecha ";
+                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) IdDistribuidor, (select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and num.empresa_id=1) IdPaquete,  stockhistorico.fecha fecha , scj_sinonimos.CodigoSinonimo IdProducto, case when sum(stocktot) > 0 then round(sum(cast(cast(stocktot as numeric(18,2))/cast(uxbcompra as numeric(18,2)) as numeric(18,2))),2) else 0 end cantidad  from stockhistorico, articulo, scj_sinonimos where stockhistorico.Articulo_Codigo= articulo.codigo and scj_sinonimos.CodigoArt=articulo.codigo and   stockhistorico.fecha = Convert(varchar,DATEADD(d,-1,getdate()),103) and deposito_id = 0 and articulo.prove =" + codigo_proveedor + " and scj_sinonimos.CodigoSinonimo <> '' and articulo.baja = 0 group by scj_sinonimos.CodigoSinonimo, stockhistorico.fecha ";
                 SqlCommand sqlcommand = new SqlCommand(SelectString, Conection);
                 System.Diagnostics.EventLog.WriteEntry("Servicio BDF", SelectString, EventLogEntryType.Information);
 
@@ -606,7 +607,7 @@ namespace BDFService
                 Conection.Open();
 
                 //comentario para compilar a asdsadsa
-                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) idDistribuidor , (select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='JJ' and num.letra='X' and num.empresa_id=1) IdPaquete, v.fecha fecha , v.comprobante NroComprobante, '' IdPedidoDinesys, case left(referencia,2) when 'NC' THEN referencia END NroComprobanteAsociado,  cod_cli IdCliente, Jonhson_Tipos_Cliente.Codigo IdTipoDeCliente,  cod_ven IdVendedor, scj.codigoSinonimo IdProducto , round(sum(iv.Cantidad*art.uxb/art.uxbcompra),2) Cantidad, case WHEN  sum(iv.Cantidad*art.uxb/art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('FA', 'PE')  THEN 'FC' when sum(iv.Cantidad* art.uxb/ art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('ND') then 'ND' else 'NC' END Tipo,     motivo.descripcion MotivoNC  from numeracion, venta v inner join  item_venta iv on v.comprobante=iv.comprobante  and v.fecha = iv.fecha and v.empresa_id= iv.empresa_id left join motivo on v.motivodev = motivo.codigo  left join articulo art on iv.cod_art=art.codigo inner join scj_sinonimos scj on scj.CodigoArt=art.codigo inner join cliente cli on cli.codigo=v.cod_cli inner join ramo on cli.ramo=ramo.codigo inner join Ramo_Vs_RamoBDF on Ramo_Vs_RamoBDF.codigo=ramo.codigo inner join Jonhson_Tipos_Cliente on Jonhson_Tipos_Cliente.Id=Ramo_Vs_RamoBDF.IDBDF where TipoNum = 'JJ' and v.fecha = Convert(varchar,DATEADD(d,-1,getdate()),103) and left(v.comprobante, 2) in ('FA','NC','ND','PE')  and art.prove =1 and scj.CodigoSinonimo <> '' and art.baja = 0 and fecha_factura is not null   group by v.fecha, v.comprobante, v.referencia, v.cod_cli, v.cod_ven, scj.CodigoSinonimo, motivo.descripcion, Jonhson_Tipos_Cliente.Codigo having sum(iv.Cantidad*art.uxb/art.uxbcompra) <> 0 ";
+                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) idDistribuidor , (select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and num.empresa_id=1) IdPaquete, v.fecha fecha , v.comprobante NroComprobante, '' IdPedidoDinesys, case left(referencia,2) when 'NC' THEN referencia END NroComprobanteAsociado,  cod_cli IdCliente, Jonhson_Tipos_Cliente.Codigo IdTipoDeCliente,  cod_ven IdVendedor, scj.codigoSinonimo IdProducto , round(sum(iv.Cantidad*art.uxb/art.uxbcompra),2) Cantidad, case WHEN  sum(iv.Cantidad*art.uxb/art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('FA', 'PE')  THEN 'FC' when sum(iv.Cantidad* art.uxb/ art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('ND') then 'ND' else 'NC' END Tipo,     motivo.descripcion MotivoNC  from numeracion, venta v inner join  item_venta iv on v.comprobante=iv.comprobante  and v.fecha = iv.fecha and v.empresa_id= iv.empresa_id left join motivo on v.motivodev = motivo.codigo  left join articulo art on iv.cod_art=art.codigo inner join scj_sinonimos scj on scj.CodigoArt=art.codigo inner join cliente cli on cli.codigo=v.cod_cli inner join ramo on cli.ramo=ramo.codigo inner join Ramo_Vs_RamoBDF on Ramo_Vs_RamoBDF.codigo=ramo.codigo inner join Jonhson_Tipos_Cliente on Jonhson_Tipos_Cliente.Id=Ramo_Vs_RamoBDF.IDBDF where TipoNum = 'BD' and v.fecha = Convert(varchar,DATEADD(d,-1,getdate()),103) and left(v.comprobante, 2) in ('FA','NC','ND','PE')  and art.prove =" + codigo_proveedor + " and scj.CodigoSinonimo <> '' and art.baja = 0 and fecha_factura is not null   group by v.fecha, v.comprobante, v.referencia, v.cod_cli, v.cod_ven, scj.CodigoSinonimo, motivo.descripcion, Jonhson_Tipos_Cliente.Codigo having sum(iv.Cantidad*art.uxb/art.uxbcompra) <> 0 ";
                 SqlCommand sqlcommand = new SqlCommand(SelectString, Conection);
                 sqlcommand.CommandTimeout = 3600;
                 SqlDataAdapter Adaptador = new SqlDataAdapter(SelectString, Conection);
@@ -904,7 +905,182 @@ namespace BDFService
 
 
         // genero archivos que no hayan sido generados por algun motivo
+        static void GenerarExcelClientes(int vDias)
+        {
+            try
+            {
 
+                if (File.Exists(path + usuario + "_mc_" + DateTime.Today.AddDays(vDias).ToString("yyyyMMdd") + ".xlsx.ant") == true) return;
+
+                //guardo el connection string
+                string cadena;
+                cadena = "Server=" + serverSQL + " ;Database=" + baseSQL + ";User Id=" + usuarioSQL + " ;Password=" + contraseñaSQL + ";";
+                // Crear un objeto SqlConnection, y luego pasar la ConnectionString al constructor.            
+                SqlConnection Conection = new SqlConnection(cadena);
+
+
+                Conection.Open();
+
+                // Utilizar una variable para almacenar la instrucción SQL.
+                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) IdDistribuidor, (select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and num.empresa_id=1) IdPaquete, cli.codigo,cli.razon_social,'' cadena,cli.provincia,cli.localidad,cli.cp,cli.direccion,cli.altura,cli.cuit,cli.geoy,cli.geox,cli.ramo from cliente cli where cli.estado='A'";
+                SqlCommand sqlcommand = new SqlCommand(SelectString, Conection);
+                //System.Diagnostics.EventLog.WriteEntry("Servicio BDF", SelectString, EventLogEntryType.Information);
+
+
+
+
+
+                sqlcommand.CommandTimeout = 3600;
+                SqlDataAdapter Adaptador = new SqlDataAdapter(SelectString, Conection);
+
+                DataSet DS = new DataSet();
+
+                // Abrir la conexión.
+
+                Adaptador.SelectCommand.CommandTimeout = 3600;
+                Adaptador.Fill(DS);
+                Conection.Close();
+
+
+                // Creamos un objeto Excel.
+                Excel.Application Mi_Excel = default(Excel.Application);
+                // Creamos un objeto WorkBook. Para crear el documento Excel.           
+                Excel.Workbook LibroExcel = default(Excel.Workbook);
+                // Creamos un objeto WorkSheet. Para crear la hoja del documento.
+                Excel.Worksheet HojaExcel = default(Excel.Worksheet);
+                // Creamos un objeto WorkSheet 2. Para crear la hoja del documento
+                Excel.Worksheet HojaExcel2 = default(Excel.Worksheet);
+
+
+
+
+                // Iniciamos una instancia a Excel, y Hacemos visibles para ver como se va creando el reporte, 
+                // podemos hacerlo visible al final si se desea.
+
+                Mi_Excel = new Excel.Application();
+                Mi_Excel.DisplayAlerts = false;
+
+                //Mi_Excel.Visible = true;
+
+                /* Ahora creamos un nuevo documento y seleccionamos la primera hoja del 
+                 * documento en la cual crearemos nuestro informe. 
+                 */
+                // Creamos una instancia del Workbooks de excel.            
+                LibroExcel = Mi_Excel.Workbooks.Add();
+                // Creamos una instancia de la primera hoja de trabajo de excel            
+                HojaExcel = (Microsoft.Office.Interop.Excel.Worksheet)LibroExcel.Worksheets[1];
+                //pruebo de cambiar el nombre de la hora
+                HojaExcel.Name = "datos";
+                HojaExcel.Visible = Excel.XlSheetVisibility.xlSheetVisible;
+
+                // Hacemos esta hoja la visible en pantalla 
+                // (como seleccionamos la primera esto no es necesario
+                // si seleccionamos una diferente a la primera si lo
+                // necesitariamos).
+                HojaExcel.Activate();
+
+                // Crear el encabezado de nuestro informe.
+                // La primera línea une las celdas y las convierte un en una sola.            
+                //HojaExcel.Range["A1:E1"].Merge();
+                // La segunda línea Asigna el nombre del encabezado.
+                HojaExcel.Range["A1:A1"].Value = "IdDistribuidor";
+                HojaExcel.Range["B1:B1"].Value = "IdPaquete";
+                HojaExcel.Range["C1:C1"].Value = "IdCliente";
+                HojaExcel.Range["D1:D1"].Value = "RazonSocial";
+                HojaExcel.Range["E1:E1"].Value = "IdProvincia";
+                HojaExcel.Range["F1:F1"].Value = "Localidad";
+                HojaExcel.Range["G1:G1"].Value = "CodigoPostal";
+                HojaExcel.Range["H1:H1"].Value = "Calle";
+                HojaExcel.Range["I1:I1"].Value = "Numero";
+                HojaExcel.Range["J1:J1"].Value = "CUIT";
+                HojaExcel.Range["K1:K1"].Value = "Latitud";
+                HojaExcel.Range["L1:L1"].Value = "Longitud";
+                HojaExcel.Range["M1:M1"].Value = "IdTipoCliente";
+
+                //objCelda.EntireColumn.NumberFormat = "###,###,###.00";
+
+                int i = 2;
+                foreach (DataRow Row in DS.Tables[0].Rows)
+                {
+                    // IdDistribuidor
+                    HojaExcel.Cells[i, "A"] = Row.ItemArray[0];
+                    // IdPaquete
+                    HojaExcel.Cells[i, "B"] = Row.ItemArray[1];
+                    // Fecha
+                    HojaExcel.Cells[i, "C"] = Row.ItemArray[2];
+                    // IdProducto
+                    HojaExcel.Cells[i, "D"] = Row.ItemArray[3];
+                    // Cantidad
+                    HojaExcel.Cells[i, "E"] = Row.ItemArray[4];
+                    HojaExcel.Cells[i, "F"] = Row.ItemArray[5];
+                    HojaExcel.Cells[i, "G"] = Row.ItemArray[6];
+                    HojaExcel.Cells[i, "H"] = Row.ItemArray[7];
+                    HojaExcel.Cells[i, "I"] = Row.ItemArray[8];
+                    HojaExcel.Cells[i, "J"] = Row.ItemArray[9];
+                    HojaExcel.Cells[i, "K"] = Row.ItemArray[10];
+                    HojaExcel.Cells[i, "L"] = Row.ItemArray[11];
+                    HojaExcel.Cells[i, "M"] = Row.ItemArray[12];
+
+                    // Avanzamos una fila
+                    i++;
+                }
+
+                // Seleccionar todo el bloque desde A1 hasta D #de filas.
+                //Excel.Range Rango = HojaExcel.Range["A3:E" + (i - 1).ToString()];
+
+                //// Selecionado todo el rango especificado
+
+                //Rango.Select();
+
+                //// Ajustamos el ancho de las columnas al ancho máximo del
+                //// contenido de sus celdas
+                //Rango.Columns.AutoFit();
+
+                //// Asignar filtro por columna
+                //Rango.AutoFilter(1);
+
+                //creo otra hoja para el control
+
+
+                LibroExcel.Worksheets.Add();
+                HojaExcel2 = (Microsoft.Office.Interop.Excel.Worksheet)LibroExcel.Worksheets[2];
+                //pruebo de cambiar el nombre de la hora
+                HojaExcel2.Name = "verificacion";
+                HojaExcel2.Activate();
+                HojaExcel2.Range["A1:A1"].Value = "INDICADOR";
+                HojaExcel2.Range["B1:B1"].Value = "VALOR";
+
+
+                HojaExcel2.Range["A2:A2"].Value = "CantRegistros";
+                //cuento la cantidad de registros
+                HojaExcel2.Range["B2"].Formula = "=CONTAR(datos!e2:datos!e99999)";
+                int contar = Convert.ToInt32(HojaExcel2.Range["B2"].Value);
+                HojaExcel2.Range["B2"].Value = contar;
+
+
+                string pathfull = path + usuario + "_mc_" + DateTime.Today.AddDays(vDias).ToString("yyyyMMdd") + ".xlsx";
+                //System.Diagnostics.EventLog.WriteEntry("Servicio BDF", pathfull, EventLogEntryType.Information);
+                LibroExcel.SaveAs(pathfull, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive, Excel.XlSaveConflictResolution.xlLocalSessionChanges);
+                LibroExcel.Close(true);
+
+                // Crear un total general
+                //LibroExcel.PrintPreview();
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                ErrorHandler.ManejarError("Ocurrio un error Generando el Archivo de Inventario", ErrorType.Critical, ex);
+
+            }
+
+
+        }
+
+        // genero archivos que no hayan sido generados por algun motivo
         static void GenerarExcelInventario(int vDias)
         {
             try
@@ -922,9 +1098,9 @@ namespace BDFService
                 Conection.Open();
 
                 // Utilizar una variable para almacenar la instrucción SQL.
-                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) IdDistribuidor, (select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='JJ' and num.letra='X' and num.empresa_id=1) IdPaquete,  stockhistorico.fecha fecha , scj_sinonimos.CodigoSinonimo IdProducto, case when sum(stocktot) > 0 then round(sum(cast(cast(stocktot as numeric(18,2))/cast(uxbcompra as numeric(18,2)) as numeric(18,2))),2) else 0 end cantidad  from stockhistorico, articulo, scj_sinonimos where stockhistorico.Articulo_Codigo= articulo.codigo and scj_sinonimos.CodigoArt=articulo.codigo and   stockhistorico.fecha = Convert(varchar,DATEADD(d," + vDias + ",getdate()),103) and deposito_id = 0 and articulo.prove =" + codigo_proveedor + " and scj_sinonimos.CodigoSinonimo <> '' and articulo.baja = 0 group by scj_sinonimos.CodigoSinonimo, stockhistorico.fecha ";
+                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) IdDistribuidor, (select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and num.empresa_id=1) IdPaquete,  stockhistorico.fecha fecha , scj_sinonimos.CodigoSinonimo IdProducto, case when sum(stocktot) > 0 then round(sum(cast(cast(stocktot as numeric(18,2))/cast(uxbcompra as numeric(18,2)) as numeric(18,2))),2) else 0 end cantidad  from stockhistorico, articulo, scj_sinonimos where stockhistorico.Articulo_Codigo= articulo.codigo and scj_sinonimos.CodigoArt=articulo.codigo and   stockhistorico.fecha = Convert(varchar,DATEADD(d," + vDias + ",getdate()),103) and deposito_id = 0 and articulo.prove =" + codigo_proveedor + " and scj_sinonimos.CodigoSinonimo <> '' and articulo.baja = 0 group by scj_sinonimos.CodigoSinonimo, stockhistorico.fecha ";
                 SqlCommand sqlcommand = new SqlCommand(SelectString, Conection);
-                System.Diagnostics.EventLog.WriteEntry("Servicio BDF", SelectString, EventLogEntryType.Information);
+                //System.Diagnostics.EventLog.WriteEntry("Servicio BDF", SelectString, EventLogEntryType.Information);
 
 
 
@@ -1054,6 +1230,7 @@ namespace BDFService
                 //creo otra hoja para el control
 
 
+                LibroExcel.Worksheets.Add();
                 HojaExcel2 = (Microsoft.Office.Interop.Excel.Worksheet)LibroExcel.Worksheets[2];
                 //pruebo de cambiar el nombre de la hora
                 HojaExcel2.Name = "verificacion";
@@ -1078,7 +1255,7 @@ namespace BDFService
 
 
                 string pathfull = path + usuario + "_inv_" + DateTime.Today.AddDays(vDias).ToString("yyyyMMdd") + ".xlsx";
-                System.Diagnostics.EventLog.WriteEntry("Servicio BDF", pathfull, EventLogEntryType.Information);
+                //System.Diagnostics.EventLog.WriteEntry("Servicio BDF", pathfull, EventLogEntryType.Information);
                 LibroExcel.SaveAs(pathfull, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive, Excel.XlSaveConflictResolution.xlLocalSessionChanges);
                 LibroExcel.Close(true);
 
@@ -1123,7 +1300,7 @@ namespace BDFService
                 Conection.Open();
 
                 //comentario para compilar a asdsadsa
-                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) idDistribuidor , ";
+                string SelectString = "select top 100 (select codigo_distribuidor from BDF_Configuracion where codigo = 1) idDistribuidor , ";
                     SelectString = SelectString + $"(select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and num.empresa_id=1) IdPaquete, ";
                 SelectString = SelectString + $"v.fecha fecha , v.comprobante NroComprobante, '' IdPedidoDinesys, case left(referencia,2) when 'NC' THEN referencia END NroComprobanteAsociado,  cod_cli IdCliente, ";
                 SelectString = SelectString + $"bdf_Tipos_Cliente.Codigo IdTipoDeCliente,  cod_ven IdVendedor, scj.codigoSinonimo IdProducto , round(sum(iv.Cantidad*art.uxb/art.uxbcompra),2) Cantidad, ";
@@ -1132,7 +1309,7 @@ namespace BDFService
                 SelectString = SelectString + $"left join motivo on v.motivodev = motivo.codigo  left join articulo art on iv.cod_art=art.codigo inner join scj_sinonimos scj on scj.CodigoArt=art.codigo ";
                 SelectString = SelectString + $"inner join cliente cli on cli.codigo=v.cod_cli inner join ramo on cli.ramo=ramo.codigo LEFT join Ramo_Vs_RamoBDF on Ramo_Vs_RamoBDF.codigo=ramo.codigo ";
                 SelectString = SelectString + $"left join bdf_Tipos_Cliente on bdf_Tipos_Cliente.Id=Ramo_Vs_RamoBDF.IDBDF ";
-                SelectString = SelectString + $"where TipoNum = 'BD' and v.fecha = Convert(varchar,DATEADD(d," + vDias + ",getdate()),103) ";
+                SelectString = SelectString + $"where TipoNum = 'BD' and v.fecha >= Convert(varchar,DATEADD(d," + vDias + "0,getdate()),103) ";
                 SelectString = SelectString + $"and left(v.comprobante, 2) in ('FA','NC','ND','PE')  and art.prove =1 and scj.CodigoSinonimo <> '' and art.baja = 0 and fecha_factura is not null   ";
                 SelectString = SelectString + $"group by v.fecha, v.comprobante, v.referencia, v.cod_cli, v.cod_ven, scj.CodigoSinonimo, motivo.descripcion, bdf_Tipos_Cliente.Codigo having sum(iv.Cantidad*art.uxb/art.uxbcompra) <> 0 ";
                 Debug.Write(SelectString);
@@ -1281,7 +1458,7 @@ namespace BDFService
 
                 //creo otra hoja para el controlDateTime.Today.ToString("yyyyMMdd")
 
-
+                LibroExcel.Worksheets.Add();
                 HojaExcel2 = (Microsoft.Office.Interop.Excel.Worksheet)LibroExcel.Worksheets[2];
                 //pruebo de cambiar el nombre de la hora
                 HojaExcel2.Name = "verificacion";
@@ -1307,7 +1484,7 @@ namespace BDFService
 
 
                 string pathfull = path + usuario + "_fac_" + DateTime.Today.AddDays(vDias).ToString("yyyyMMdd") + ".xlsx";
-                System.Diagnostics.EventLog.WriteEntry("Servicio BDF", pathfull, EventLogEntryType.Information);
+                //System.Diagnostics.EventLog.WriteEntry("Servicio BDF", pathfull, EventLogEntryType.Information);
                 LibroExcel.SaveAs(pathfull, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive, Excel.XlSaveConflictResolution.xlLocalSessionChanges);
                 //LibroExcel.SaveAs("E:\\dibert_fac_" + DateTime.Today.ToString("yyyyMMdd") + ".xlsx", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive, Excel.XlSaveConflictResolution.xlLocalSessionChanges);
                 LibroExcel.Close(true);
