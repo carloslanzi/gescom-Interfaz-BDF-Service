@@ -1281,7 +1281,7 @@ namespace BDFService
             try
             {
 
-                if (File.Exists(path + usuario + "_fac_" + DateTime.Today.AddDays(vDias).ToString("yyyyMMdd") + ".xlsx.ant") == true) return;
+                if (File.Exists(path + usuario + "_vta_" + DateTime.Today.AddDays(vDias).ToString("yyyyMMdd") + ".xlsx.ant") == true) return;
 
                 //guardo el connection string
                 string cadena;
@@ -1300,19 +1300,19 @@ namespace BDFService
                 Conection.Open();
 
                 //comentario para compilar a asdsadsa
-                string SelectString = "select top 100 (select codigo_distribuidor from BDF_Configuracion where codigo = 1) idDistribuidor , ";
-                    SelectString = SelectString + $"(select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and num.empresa_id=1) IdPaquete, ";
-                SelectString = SelectString + $"v.fecha fecha , v.comprobante NroComprobante, '' IdPedidoDinesys, case left(referencia,2) when 'NC' THEN referencia END NroComprobanteAsociado,  cod_cli IdCliente, ";
-                SelectString = SelectString + $"bdf_Tipos_Cliente.Codigo IdTipoDeCliente,  cod_ven IdVendedor, scj.codigoSinonimo IdProducto , round(sum(iv.Cantidad*art.uxb/art.uxbcompra),2) Cantidad, ";
-                SelectString = SelectString + $"case WHEN  sum(iv.Cantidad*art.uxb/art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('FA', 'PE')  THEN 'FC' when sum(iv.Cantidad* art.uxb/ art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('ND') then 'ND' else 'NC' END Tipo,    ";
-                SelectString = SelectString + $" motivo.descripcion MotivoNC  from numeracion, venta v inner join  item_venta iv on v.comprobante=iv.comprobante  and v.fecha = iv.fecha and v.empresa_id= iv.empresa_id ";
-                SelectString = SelectString + $"left join motivo on v.motivodev = motivo.codigo  left join articulo art on iv.cod_art=art.codigo inner join scj_sinonimos scj on scj.CodigoArt=art.codigo ";
-                SelectString = SelectString + $"inner join cliente cli on cli.codigo=v.cod_cli inner join ramo on cli.ramo=ramo.codigo LEFT join Ramo_Vs_RamoBDF on Ramo_Vs_RamoBDF.codigo=ramo.codigo ";
-                SelectString = SelectString + $"left join bdf_Tipos_Cliente on bdf_Tipos_Cliente.Id=Ramo_Vs_RamoBDF.IDBDF ";
-                SelectString = SelectString + $"where TipoNum = 'BD' and v.fecha >= Convert(varchar,DATEADD(d," + vDias + "0,getdate()),103) ";
-                SelectString = SelectString + $"and left(v.comprobante, 2) in ('FA','NC','ND','PE')  and art.prove =1 and scj.CodigoSinonimo <> '' and art.baja = 0 and fecha_factura is not null   ";
-                SelectString = SelectString + $"group by v.fecha, v.comprobante, v.referencia, v.cod_cli, v.cod_ven, scj.CodigoSinonimo, motivo.descripcion, bdf_Tipos_Cliente.Codigo having sum(iv.Cantidad*art.uxb/art.uxbcompra) <> 0 ";
-                Debug.Write(SelectString);
+                string SelectString = " select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) idDistribuidor , ";
+                SelectString = SelectString + $" (select num.numero+1 from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and num.empresa_id=1) IdPaquete, ";
+                SelectString = SelectString + $" cod_cli IdCliente, bdf_Tipos_Cliente.Codigo IdTipoDeCliente,  cod_ven IdVendedor, 'Nombre Vendedor' NombrVen,'Apellido Vendedor' Apellidoven,";
+                SelectString = SelectString + $" scj.codigoSinonimo IdProducto , 'PC' UnidadMedida, v.fecha fecha ,";
+                SelectString = SelectString + $" case WHEN  sum(iv.Cantidad*art.uxb/art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('FA', 'PE') ";
+                SelectString = SelectString + $" THEN 'FC' when sum(iv.Cantidad* art.uxb/ art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('ND') then 'ND' else 'NC' END Tipo,   round(sum(iv.Cantidad*art.uxb/art.uxbcompra),2) Cantidad, ";
+                SelectString = SelectString + $" v.comprobante NroComprobante, isnull(case left(referencia,2) when 'NC' THEN referencia END,'') NroComprobanteAsociado,  motivo.descripcion MotivoNC  ";
+                SelectString = SelectString + $" from numeracion, venta v inner join  item_venta iv on v.comprobante=iv.comprobante  and ";
+                SelectString = SelectString + $" v.fecha = iv.fecha and v.empresa_id= iv.empresa_id left join motivo on v.motivodev = motivo.codigo  left join articulo art on ";
+                SelectString = SelectString + $" iv.cod_art=art.codigo inner join scj_sinonimos scj on scj.CodigoArt=art.codigo inner join cliente cli on cli.codigo=v.cod_cli inner join ramo ";
+                SelectString = SelectString + $" on cli.ramo=ramo.codigo LEFT join Ramo_Vs_RamoBDF on Ramo_Vs_RamoBDF.codigo=ramo.codigo left join bdf_Tipos_Cliente on bdf_Tipos_Cliente.Id=Ramo_Vs_RamoBDF.IDBDF";
+                SelectString = SelectString + $" where TipoNum = 'BD' and v.fecha = Convert(varchar,DATEADD(d,-33,getdate()),103) and left(v.comprobante, 2) in ('FA','NC','ND','PE') and art.prove =1 and scj.CodigoSinonimo <> '' and art.baja = 0 and fecha_factura is not null   ";
+                SelectString = SelectString + $" group by v.fecha, v.comprobante, v.referencia, v.cod_cli, v.cod_ven, scj.CodigoSinonimo, motivo.descripcion, bdf_Tipos_Cliente.Codigo having sum(iv.Cantidad*art.uxb/art.uxbcompra) <> 0 "; Debug.Write(SelectString);
                 SqlCommand sqlcommand = new SqlCommand(SelectString, Conection);
                 sqlcommand.CommandTimeout = 3600;
                 SqlDataAdapter Adaptador = new SqlDataAdapter(SelectString, Conection);
@@ -1349,6 +1349,7 @@ namespace BDFService
                  */
                 // Creamos una instancia del Workbooks de excel.            
                 LibroExcel = Mi_Excel.Workbooks.Add();
+                LibroExcel.Worksheets.Add();
                 // Creamos una instancia de la primera hoja de trabajo de excel            
                 HojaExcel = (Microsoft.Office.Interop.Excel.Worksheet)LibroExcel.Worksheets[1];
                 //pruebo de cambiar el nombre de la hora
@@ -1367,17 +1368,19 @@ namespace BDFService
                 // La segunda línea Asigna el nombre del encabezado.
                 HojaExcel.Range["A1:A1"].Value = "IdDistribuidor";
                 HojaExcel.Range["B1:B1"].Value = "IdPaquete";
-                HojaExcel.Range["C1:C1"].Value = "Fecha";
-                HojaExcel.Range["D1:D1"].Value = "NroComprobante";
-                HojaExcel.Range["E1:E1"].Value = "IdPedidoDinesys";
-                HojaExcel.Range["F1:F1"].Value = "NroComprobanteAsociado";
-                HojaExcel.Range["G1:G1"].Value = "IdCliente";
-                HojaExcel.Range["H1:H1"].Value = "IdTipoDeCliente";
-                HojaExcel.Range["I1:I1"].Value = "IdVendedor";
-                HojaExcel.Range["J1:J1"].Value = "IdProducto";
-                HojaExcel.Range["K1:K1"].Value = "Cantidad";
-                HojaExcel.Range["L1:L1"].Value = "TipoDeComprobante";
-                HojaExcel.Range["M1:M1"].Value = "MotivoNC";
+                HojaExcel.Range["C1:C1"].Value = "IdCliente";
+                HojaExcel.Range["D1:D1"].Value = "IdTipoDeCliente";
+                HojaExcel.Range["E1:E1"].Value = "IdVendedor";
+                HojaExcel.Range["F1:F1"].Value = "NombreVendedor";
+                HojaExcel.Range["G1:G1"].Value = "ApellidoVendedor";
+                HojaExcel.Range["H1:H1"].Value = "IdProducto";
+                HojaExcel.Range["I1:I1"].Value = "UnidadMedida";
+                HojaExcel.Range["J1:J1"].Value = "Fecha";
+                HojaExcel.Range["K1:K1"].Value = "TipoDocumento";
+                HojaExcel.Range["L1:L1"].Value = "Cantidad";
+                HojaExcel.Range["M1:M1"].Value = "NroComprobante";
+                HojaExcel.Range["N1:N1"].Value = "NroComprobanteAsociado";
+                HojaExcel.Range["O1:O1"].Value = "MotivoCR";
 
                 // La tercera línea asigna negrita al titulo.
                 // HojaExcel.Range["A1:E1"].Font.Bold = true;
@@ -1423,20 +1426,15 @@ namespace BDFService
                     HojaExcel.Cells[i, "E"] = Row.ItemArray[4];
                     // IdPedidoDinesys
                     HojaExcel.Cells[i, "F"] = Row.ItemArray[5];
-
                     HojaExcel.Cells[i, "G"] = Row.ItemArray[6];
-
                     HojaExcel.Cells[i, "H"] = Row.ItemArray[7];
-
                     HojaExcel.Cells[i, "I"] = Row.ItemArray[8];
-
                     HojaExcel.Cells[i, "J"] = Row.ItemArray[9];
-
                     HojaExcel.Cells[i, "K"] = Row.ItemArray[10];
-
                     HojaExcel.Cells[i, "L"] = Row.ItemArray[11];
-
                     HojaExcel.Cells[i, "M"] = Row.ItemArray[12];
+                    HojaExcel.Cells[i, "N"] = Row.ItemArray[12];
+                    HojaExcel.Cells[i, "O"] = Row.ItemArray[12];
 
                     // Avanzamos una fila
                     i++;
@@ -1458,7 +1456,7 @@ namespace BDFService
 
                 //creo otra hoja para el controlDateTime.Today.ToString("yyyyMMdd")
 
-                LibroExcel.Worksheets.Add();
+                //LibroExcel.Worksheets.Add();
                 HojaExcel2 = (Microsoft.Office.Interop.Excel.Worksheet)LibroExcel.Worksheets[2];
                 //pruebo de cambiar el nombre de la hora
                 HojaExcel2.Name = "verificacion";
@@ -1483,7 +1481,7 @@ namespace BDFService
 
 
 
-                string pathfull = path + usuario + "_fac_" + DateTime.Today.AddDays(vDias).ToString("yyyyMMdd") + ".xlsx";
+                string pathfull = path + usuario + "_vta_" + DateTime.Today.AddDays(vDias).ToString("yyyyMMdd") + ".xlsx";
                 //System.Diagnostics.EventLog.WriteEntry("Servicio BDF", pathfull, EventLogEntryType.Information);
                 LibroExcel.SaveAs(pathfull, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive, Excel.XlSaveConflictResolution.xlLocalSessionChanges);
                 //LibroExcel.SaveAs("E:\\dibert_fac_" + DateTime.Today.ToString("yyyyMMdd") + ".xlsx", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Excel.XlSaveAsAccessMode.xlExclusive, Excel.XlSaveConflictResolution.xlLocalSessionChanges);
