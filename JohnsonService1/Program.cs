@@ -922,7 +922,7 @@ namespace BDFService
                 Conection.Open();
 
                 // Utilizar una variable para almacenar la instrucción SQL.
-                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) IdDistribuidor, (select num.numero+1 from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and 	num.empresa_id=1) IdPaquete, 	cli.codigo,cli.razon_social,'' cadena, 6 provincia,cli.localidad,cli.cp,cli.direccion,cli.altura,	cli.cuit,case when geoy=0 then '' else convert(varchar,cli.geoy) end geoy,case when geox=0 then '' else convert(varchar,cli.geox) end geox,cli.ramo 	from cliente cli where 	cli.estado='A'";
+                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) IdDistribuidor, (select num.numero+1 from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and 	num.empresa_id=1) IdPaquete, 	cli.codigo,cli.razon_social,'' cadena, 6 provincia,cli.localidad,cli.cp,cli.direccion,'' altura,	cli.cuit,case when geoy=0 then '' else convert(varchar,cli.geoy) end geoy,case when geox=0 then '' else convert(varchar,cli.geox) end geox,cli.ramo 	from cliente cli where 	cli.estado='A'";
                 SqlCommand sqlcommand = new SqlCommand(SelectString, Conection);
                 //System.Diagnostics.EventLog.WriteEntry("Servicio BDF", SelectString, EventLogEntryType.Information);
 
@@ -988,7 +988,7 @@ namespace BDFService
                 HojaExcel.Range["B1:B1"].Value = "IdPaquete";
                 HojaExcel.Range["C1:C1"].Value = "IdCliente";
                 HojaExcel.Range["D1:D1"].Value = "RazonSocial";
-                HojaExcel.Range["E1:E1"].Value = "Cadena";
+                HojaExcel.Range["E1:E1"].Value = "BannerText";
                 HojaExcel.Range["F1:F1"].Value = "IdProvincia";
                 HojaExcel.Range["G1:G1"].Value = "Localidad";
                 HojaExcel.Range["H1:H1"].Value = "CodigoPostal";
@@ -1056,7 +1056,7 @@ namespace BDFService
 
                 HojaExcel2.Range["A2:A2"].Value = "CantRegistros";
                 //cuento la cantidad de registros
-                HojaExcel2.Range["B2"].Formula = "=CONTAR(datos!e2:datos!e99999)";
+                HojaExcel2.Range["B2"].Formula = "=CONTAR(datos!C2:datos!C99999)";
                 int contar = Convert.ToInt32(HojaExcel2.Range["B2"].Value);
                 HojaExcel2.Range["B2"].Value = contar;
 
@@ -1251,14 +1251,14 @@ namespace BDFService
 
                 HojaExcel2.Range["A2:A2"].Value = "CantRegistros";
                 //cuento la cantidad de registros
-                HojaExcel2.Range["B2"].Formula = "=CONTAR(datos!e2:datos!e99999)";
+                HojaExcel2.Range["B2"].Formula = "=CONTAR(datos!H2:datos!H99999)";
                 int contar = Convert.ToInt32(HojaExcel2.Range["B2"].Value);
                 HojaExcel2.Range["B2"].Value = contar;
 
 
                 HojaExcel2.Range["A3:A3"].Value = "TotalCajas";
                 //sumo la columna cantidad
-                HojaExcel2.Range["B3"].Formula = "=SUMA(datos!e2:datos!e99999)";
+                HojaExcel2.Range["B3"].Formula = "=SUMA(datos!H2:datos!H99999)";
                 decimal sumar = Convert.ToDecimal(HojaExcel2.Range["B3"].Value);
                 sumar = decimal.Round(sumar, 2);
                 HojaExcel2.Range["B3"].Value = sumar;
@@ -1315,14 +1315,14 @@ namespace BDFService
                 SelectString = SelectString + $" cod_cli IdCliente, isnull(bdf_Tipos_Cliente.Codigo,8) IdTipoDeCliente,  cod_ven IdVendedor, 'Nombre Vendedor' NombrVen,'Apellido Vendedor' Apellidoven,";
                 SelectString = SelectString + $" scj.codigoSinonimo IdProducto , 'PC' UnidadMedida,  convert(varchar,v.fecha,23) fecha ,";
                 SelectString = SelectString + $" case WHEN  sum(iv.Cantidad*art.uxb/art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('FR','FA', 'PE') ";
-                SelectString = SelectString + $" THEN 'OR' when sum(iv.Cantidad* art.uxb/ art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('ND') then 'DR' else 'CR' END Tipo,   round(sum(iv.Cantidad*art.uxb/art.uxbcompra),0) Cantidad, ";
-                SelectString = SelectString + $" v.comprobante NroComprobante, isnull(case left(referencia,2) when 'NC' THEN referencia END,'') NroComprobanteAsociado,  motivo.descripcion MotivoNC  ";
+                SelectString = SelectString + $" THEN 'OR' when sum(iv.Cantidad* art.uxb/ art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('ND') then 'DR' else 'CR' END Tipo,   round(sum(iv.Cantidad_uni),0) Cantidad, ";
+                SelectString = SelectString + $" v.comprobante NroComprobante, isnull(case left(v.comprobante,2) when 'NC' THEN referencia  else '' END,'') NroComprobanteAsociado,  motivo.descripcion MotivoNC  ";
                 SelectString = SelectString + $" from numeracion, venta v inner join  item_venta iv on v.comprobante=iv.comprobante  and ";
                 SelectString = SelectString + $" v.fecha = iv.fecha and v.empresa_id= iv.empresa_id left join motivo on v.motivodev = motivo.codigo  left join articulo art on ";
                 SelectString = SelectString + $" iv.cod_art=art.codigo inner join scj_sinonimos scj on scj.CodigoArt=art.codigo inner join cliente cli on cli.codigo=v.cod_cli inner join ramo ";
                 SelectString = SelectString + $" on cli.ramo=ramo.codigo LEFT join Ramo_Vs_RamoBDF on Ramo_Vs_RamoBDF.codigo=ramo.codigo left join bdf_Tipos_Cliente on bdf_Tipos_Cliente.Id=Ramo_Vs_RamoBDF.IDBDF";
                 SelectString = SelectString + $" where TipoNum = 'BD' and v.fecha = Convert(varchar,DATEADD(d,-33,getdate()),103) and left(v.comprobante, 2) in ('FA','NC','ND','PE') and art.prove =1 and scj.CodigoSinonimo <> '' and art.baja = 0 and fecha_factura is not null   ";
-                SelectString = SelectString + $" group by v.fecha, v.comprobante, v.referencia, v.cod_cli, v.cod_ven, scj.CodigoSinonimo, motivo.descripcion, bdf_Tipos_Cliente.Codigo having sum(iv.Cantidad*art.uxb/art.uxbcompra) <> 0 "; Debug.Write(SelectString);
+                SelectString = SelectString + $" group by v.fecha, v.comprobante, v.referencia, v.cod_cli, v.cod_ven, scj.CodigoSinonimo, motivo.descripcion, bdf_Tipos_Cliente.Codigo having sum(iv.Cantidad_uni) <> 0 "; Debug.Write(SelectString);
                 SqlCommand sqlcommand = new SqlCommand(SelectString, Conection);
                 sqlcommand.CommandTimeout = 3600;
                 SqlDataAdapter Adaptador = new SqlDataAdapter(SelectString, Conection);
@@ -1477,13 +1477,13 @@ namespace BDFService
 
                 HojaExcel2.Range["A2:A2"].Value = "CantRegistros";
                 //cuento la cantidad de registros
-                HojaExcel2.Range["B2"].Formula = "=CONTAR(datos!K2:datos!K99999)";
+                HojaExcel2.Range["B2"].Formula = "=CONTAR(datos!L2:datos!L99999)";
                 int contar = Convert.ToInt32(HojaExcel2.Range["B2"].Value);
                 HojaExcel2.Range["B2"].Value = contar;
 
                 HojaExcel2.Range["A3:A3"].Value = "TotalCajas";
                 //sumo la columna cantidad
-                HojaExcel2.Range["B3"].Formula = "=SUMA(datos!K2:datos!K99999)";
+                HojaExcel2.Range["B3"].Formula = "=SUMA(datos!L2:datos!L99999)";
                 decimal sumar = Convert.ToDecimal(HojaExcel2.Range["B3"].Value);
                 sumar = decimal.Round(sumar, 2);
                 HojaExcel2.Range["B3"].Value = sumar;
