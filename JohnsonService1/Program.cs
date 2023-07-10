@@ -69,7 +69,7 @@ namespace BDFService
                     GenerarExcelClientes(-1);
 
                     //genero los archivos de 2 dias antes si no existen
-                    GenerarExcelFacturacion(-2);
+                       GenerarExcelFacturacion(-2);
                     GenerarExcelInventario(-2);
 
 
@@ -922,7 +922,7 @@ namespace BDFService
                 Conection.Open();
 
                 // Utilizar una variable para almacenar la instrucción SQL.
-                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) IdDistribuidor, (select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and num.empresa_id=1) IdPaquete, cli.codigo,cli.razon_social,'' cadena,cli.provincia,cli.localidad,cli.cp,cli.direccion,cli.altura,cli.cuit,cli.geoy,cli.geox,cli.ramo from cliente cli where cli.estado='A'";
+                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) IdDistribuidor, (select num.numero+1 from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and 	num.empresa_id=1) IdPaquete, 	cli.codigo,cli.razon_social,'' cadena, 6 provincia,cli.localidad,cli.cp,cli.direccion,cli.altura,	cli.cuit,case when geoy=0 then '' else convert(varchar,cli.geoy) end geoy,case when geox=0 then '' else convert(varchar,cli.geox) end geox,cli.ramo 	from cliente cli where 	cli.estado='A'";
                 SqlCommand sqlcommand = new SqlCommand(SelectString, Conection);
                 //System.Diagnostics.EventLog.WriteEntry("Servicio BDF", SelectString, EventLogEntryType.Information);
 
@@ -967,6 +967,7 @@ namespace BDFService
                  */
                 // Creamos una instancia del Workbooks de excel.            
                 LibroExcel = Mi_Excel.Workbooks.Add();
+                LibroExcel.Worksheets.Add();
                 // Creamos una instancia de la primera hoja de trabajo de excel            
                 HojaExcel = (Microsoft.Office.Interop.Excel.Worksheet)LibroExcel.Worksheets[1];
                 //pruebo de cambiar el nombre de la hora
@@ -987,15 +988,16 @@ namespace BDFService
                 HojaExcel.Range["B1:B1"].Value = "IdPaquete";
                 HojaExcel.Range["C1:C1"].Value = "IdCliente";
                 HojaExcel.Range["D1:D1"].Value = "RazonSocial";
-                HojaExcel.Range["E1:E1"].Value = "IdProvincia";
-                HojaExcel.Range["F1:F1"].Value = "Localidad";
-                HojaExcel.Range["G1:G1"].Value = "CodigoPostal";
-                HojaExcel.Range["H1:H1"].Value = "Calle";
-                HojaExcel.Range["I1:I1"].Value = "Numero";
-                HojaExcel.Range["J1:J1"].Value = "CUIT";
-                HojaExcel.Range["K1:K1"].Value = "Latitud";
-                HojaExcel.Range["L1:L1"].Value = "Longitud";
-                HojaExcel.Range["M1:M1"].Value = "IdTipoCliente";
+                HojaExcel.Range["E1:E1"].Value = "Cadena";
+                HojaExcel.Range["F1:F1"].Value = "IdProvincia";
+                HojaExcel.Range["G1:G1"].Value = "Localidad";
+                HojaExcel.Range["H1:H1"].Value = "CodigoPostal";
+                HojaExcel.Range["I1:I1"].Value = "Calle";
+                HojaExcel.Range["J1:J1"].Value = "Numero";
+                HojaExcel.Range["K1:K1"].Value = "CUIT";
+                HojaExcel.Range["L1:L1"].Value = "Latitud";
+                HojaExcel.Range["M1:M1"].Value = "Longitud";
+                HojaExcel.Range["N1:N1"].Value = "IdTipoCliente";
 
                 //objCelda.EntireColumn.NumberFormat = "###,###,###.00";
 
@@ -1020,6 +1022,7 @@ namespace BDFService
                     HojaExcel.Cells[i, "K"] = Row.ItemArray[10];
                     HojaExcel.Cells[i, "L"] = Row.ItemArray[11];
                     HojaExcel.Cells[i, "M"] = Row.ItemArray[12];
+                    HojaExcel.Cells[i, "N"] = Row.ItemArray[13];
 
                     // Avanzamos una fila
                     i++;
@@ -1042,7 +1045,7 @@ namespace BDFService
                 //creo otra hoja para el control
 
 
-                LibroExcel.Worksheets.Add();
+             
                 HojaExcel2 = (Microsoft.Office.Interop.Excel.Worksheet)LibroExcel.Worksheets[2];
                 //pruebo de cambiar el nombre de la hora
                 HojaExcel2.Name = "verificacion";
@@ -1098,7 +1101,7 @@ namespace BDFService
                 Conection.Open();
 
                 // Utilizar una variable para almacenar la instrucción SQL.
-                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) IdDistribuidor, (select num.numero from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and num.empresa_id=1) IdPaquete,  stockhistorico.fecha fecha , scj_sinonimos.CodigoSinonimo IdProducto, case when sum(stocktot) > 0 then round(sum(cast(cast(stocktot as numeric(18,2))/cast(uxbcompra as numeric(18,2)) as numeric(18,2))),2) else 0 end cantidad  from stockhistorico, articulo, scj_sinonimos where stockhistorico.Articulo_Codigo= articulo.codigo and scj_sinonimos.CodigoArt=articulo.codigo and   stockhistorico.fecha = Convert(varchar,DATEADD(d," + vDias + ",getdate()),103) and deposito_id = 0 and articulo.prove =" + codigo_proveedor + " and scj_sinonimos.CodigoSinonimo <> '' and articulo.baja = 0 group by scj_sinonimos.CodigoSinonimo, stockhistorico.fecha ";
+                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) IdDistribuidor, (select num.numero+1 from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and num.empresa_id=1) IdPaquete,   scj_sinonimos.CodigoSinonimo IdProducto, 'PC' UnidadMedida,convert(varchar,stockhistorico.fecha,23) fecha , 1 tipoinventario,'UNI'Deposito, case when sum(stocktot) > 0 then round(sum(cast(cast(stocktot as numeric(18,2))/cast(uxbcompra as numeric(18,2)) as numeric(18,2))),0) else 0 end cantidad from stockhistorico, articulo, scj_sinonimos   where stockhistorico.Articulo_Codigo= articulo.codigo and scj_sinonimos.CodigoArt=articulo.codigo and   stockhistorico.fecha = Convert(varchar,DATEADD(d," + vDias + ",getdate()),103) and deposito_id = 0 and articulo.prove =" + codigo_proveedor + " and scj_sinonimos.CodigoSinonimo <> '' and articulo.baja = 0 group by scj_sinonimos.CodigoSinonimo, stockhistorico.fecha ";
                 SqlCommand sqlcommand = new SqlCommand(SelectString, Conection);
                 //System.Diagnostics.EventLog.WriteEntry("Servicio BDF", SelectString, EventLogEntryType.Information);
 
@@ -1143,6 +1146,8 @@ namespace BDFService
                  */
                 // Creamos una instancia del Workbooks de excel.            
                 LibroExcel = Mi_Excel.Workbooks.Add();
+
+                LibroExcel.Worksheets.Add();
                 // Creamos una instancia de la primera hoja de trabajo de excel            
                 HojaExcel = (Microsoft.Office.Interop.Excel.Worksheet)LibroExcel.Worksheets[1];
                 //pruebo de cambiar el nombre de la hora
@@ -1161,10 +1166,13 @@ namespace BDFService
                 // La segunda línea Asigna el nombre del encabezado.
                 HojaExcel.Range["A1:A1"].Value = "IdDistribuidor";
                 HojaExcel.Range["B1:B1"].Value = "IdPaquete";
-                HojaExcel.Range["C1:C1"].Value = "Fecha";
-                HojaExcel.Range["D1:D1"].Value = "IdProducto";
-                HojaExcel.Range["E1:E1"].Value = "Cantidad";
-
+                HojaExcel.Range["C1:D1"].Value = "IdProducto";
+                HojaExcel.Range["D1:D1"].Value = "UnidadMedida";
+                HojaExcel.Range["E1:E1"].Value = "Fecha";
+                HojaExcel.Range["F1:F1"].Value = "IdTipoInventario";
+                HojaExcel.Range["G1:G1"].Value = "Deposito";
+                HojaExcel.Range["H1:H1"].Value = "Cantidad";
+ 
 
                 // La tercera línea asigna negrita al titulo.
                 // HojaExcel.Range["A1:E1"].Font.Bold = true;
@@ -1202,12 +1210,15 @@ namespace BDFService
                     HojaExcel.Cells[i, "A"] = Row.ItemArray[0];
                     // IdPaquete
                     HojaExcel.Cells[i, "B"] = Row.ItemArray[1];
-                    // Fecha
+                    
                     HojaExcel.Cells[i, "C"] = Row.ItemArray[2];
-                    // IdProducto
+                    
                     HojaExcel.Cells[i, "D"] = Row.ItemArray[3];
-                    // Cantidad
-                    HojaExcel.Cells[i, "E"] = Row.ItemArray[4];
+                    
+                    HojaExcel.Cells[i, "E"] = "'" + Row.ItemArray[4];
+                    HojaExcel.Cells[i, "F"] = Row.ItemArray[5];
+                    HojaExcel.Cells[i, "G"] = Row.ItemArray[6];
+                    HojaExcel.Cells[i, "H"] = Row.ItemArray[7];
 
                     // Avanzamos una fila
                     i++;
@@ -1230,7 +1241,6 @@ namespace BDFService
                 //creo otra hoja para el control
 
 
-                LibroExcel.Worksheets.Add();
                 HojaExcel2 = (Microsoft.Office.Interop.Excel.Worksheet)LibroExcel.Worksheets[2];
                 //pruebo de cambiar el nombre de la hora
                 HojaExcel2.Name = "verificacion";
@@ -1302,10 +1312,10 @@ namespace BDFService
                 //comentario para compilar a asdsadsa
                 string SelectString = " select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) idDistribuidor , ";
                 SelectString = SelectString + $" (select num.numero+1 from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and num.empresa_id=1) IdPaquete, ";
-                SelectString = SelectString + $" cod_cli IdCliente, bdf_Tipos_Cliente.Codigo IdTipoDeCliente,  cod_ven IdVendedor, 'Nombre Vendedor' NombrVen,'Apellido Vendedor' Apellidoven,";
-                SelectString = SelectString + $" scj.codigoSinonimo IdProducto , 'PC' UnidadMedida, v.fecha fecha ,";
-                SelectString = SelectString + $" case WHEN  sum(iv.Cantidad*art.uxb/art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('FA', 'PE') ";
-                SelectString = SelectString + $" THEN 'FC' when sum(iv.Cantidad* art.uxb/ art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('ND') then 'ND' else 'NC' END Tipo,   round(sum(iv.Cantidad*art.uxb/art.uxbcompra),2) Cantidad, ";
+                SelectString = SelectString + $" cod_cli IdCliente, isnull(bdf_Tipos_Cliente.Codigo,8) IdTipoDeCliente,  cod_ven IdVendedor, 'Nombre Vendedor' NombrVen,'Apellido Vendedor' Apellidoven,";
+                SelectString = SelectString + $" scj.codigoSinonimo IdProducto , 'PC' UnidadMedida,  convert(varchar,v.fecha,23) fecha ,";
+                SelectString = SelectString + $" case WHEN  sum(iv.Cantidad*art.uxb/art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('FR','FA', 'PE') ";
+                SelectString = SelectString + $" THEN 'OR' when sum(iv.Cantidad* art.uxb/ art.uxbcompra) >= 0 and left(v.comprobante, 2) in ('ND') then 'DR' else 'CR' END Tipo,   round(sum(iv.Cantidad*art.uxb/art.uxbcompra),0) Cantidad, ";
                 SelectString = SelectString + $" v.comprobante NroComprobante, isnull(case left(referencia,2) when 'NC' THEN referencia END,'') NroComprobanteAsociado,  motivo.descripcion MotivoNC  ";
                 SelectString = SelectString + $" from numeracion, venta v inner join  item_venta iv on v.comprobante=iv.comprobante  and ";
                 SelectString = SelectString + $" v.fecha = iv.fecha and v.empresa_id= iv.empresa_id left join motivo on v.motivodev = motivo.codigo  left join articulo art on ";
@@ -1429,12 +1439,12 @@ namespace BDFService
                     HojaExcel.Cells[i, "G"] = Row.ItemArray[6];
                     HojaExcel.Cells[i, "H"] = Row.ItemArray[7];
                     HojaExcel.Cells[i, "I"] = Row.ItemArray[8];
-                    HojaExcel.Cells[i, "J"] = Row.ItemArray[9];
+                    HojaExcel.Cells[i, "J"] = "'"  + Row.ItemArray[9];
                     HojaExcel.Cells[i, "K"] = Row.ItemArray[10];
                     HojaExcel.Cells[i, "L"] = Row.ItemArray[11];
                     HojaExcel.Cells[i, "M"] = Row.ItemArray[12];
-                    HojaExcel.Cells[i, "N"] = Row.ItemArray[12];
-                    HojaExcel.Cells[i, "O"] = Row.ItemArray[12];
+                    HojaExcel.Cells[i, "N"] = Row.ItemArray[13];
+                    HojaExcel.Cells[i, "O"] = Row.ItemArray[14];
 
                     // Avanzamos una fila
                     i++;
