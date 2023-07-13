@@ -1321,7 +1321,7 @@ namespace BDFService
                 SelectString = SelectString + $" v.fecha = iv.fecha and v.empresa_id= iv.empresa_id left join motivo on v.motivodev = motivo.codigo  left join articulo art on ";
                 SelectString = SelectString + $" iv.cod_art=art.codigo inner join scj_sinonimos scj on scj.CodigoArt=art.codigo inner join cliente cli on cli.codigo=v.cod_cli inner join ramo ";
                 SelectString = SelectString + $" on cli.ramo=ramo.codigo LEFT join Ramo_Vs_RamoBDF on Ramo_Vs_RamoBDF.codigo=ramo.codigo left join bdf_Tipos_Cliente on bdf_Tipos_Cliente.Id=Ramo_Vs_RamoBDF.IDBDF";
-                SelectString = SelectString + $" where TipoNum = 'BD' and v.fecha = Convert(varchar,DATEADD(d,-33,getdate()),103) and left(v.comprobante, 2) in ('FA','NC','ND','PE') and art.prove =1 and scj.CodigoSinonimo <> '' and art.baja = 0 and fecha_factura is not null   ";
+                SelectString = SelectString + $" where TipoNum = 'BD' and v.fecha = Convert(varchar,DATEADD(d,-33,getdate()),103) and left(v.comprobante, 2) in ('FA','NC','ND','PE') and art.prove =" + codigo_proveedor + "  and scj.CodigoSinonimo <> '' and art.baja = 0 and fecha_factura is not null   ";
                 SelectString = SelectString + $" group by v.fecha, v.comprobante, v.referencia, v.cod_cli, v.cod_ven, scj.CodigoSinonimo, motivo.descripcion, bdf_Tipos_Cliente.Codigo having sum(iv.Cantidad_uni) <> 0 "; Debug.Write(SelectString);
                 SqlCommand sqlcommand = new SqlCommand(SelectString, Conection);
                 sqlcommand.CommandTimeout = 3600;
