@@ -51,7 +51,7 @@ namespace BDFService
             CrearConfiguracionXML();
             LeerConfiguracionXML();
             LeerDatosConfiguracion();
-
+            Console.WriteLine("Hola");
             if (ult_envio != DateTime.Now.Date)
             {
 
@@ -1102,7 +1102,7 @@ namespace BDFService
                 Conection.Open();
 
                 // Utilizar una variable para almacenar la instrucción SQL.
-                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) IdDistribuidor, (select num.numero+1 from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and num.empresa_id=1) IdPaquete,   articulo.codigoprov IdProducto, 'PC' UnidadMedida,convert(varchar,stockhistorico.fecha,23) fecha , 1 tipoinventario,'UNI'Deposito, case when sum(stocktot) > 0 then round(sum(cast(cast(stocktot as numeric(18,2))/cast(uxbcompra as numeric(18,2)) as numeric(18,2))),0) else 0 end cantidad from stockhistorico, articulo  where stockhistorico.Articulo_Codigo= articulo.codigo and  stockhistorico.fecha = Convert(varchar,DATEADD(d,-33,getdate()),103) and deposito_id = 0 and articulo.prove =" + codigo_proveedor + " and articulo.baja = 0 group by articulo.codigoprov,stockhistorico.fecha ";
+                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) IdDistribuidor, (select num.numero+1 from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and num.empresa_id=1) IdPaquete,   articulo.codigoprov IdProducto, 'PC' UnidadMedida,convert(varchar,stockhistorico.fecha,23) fecha , 1 tipoinventario,'UNI'Deposito, case when sum(stocktot) > 0 then round(sum(cast(cast(stocktot as numeric(18,2))/cast(uxbcompra as numeric(18,2)) as numeric(18,2))),0) else 0 end cantidad from stockhistorico, articulo  where stockhistorico.Articulo_Codigo= articulo.codigo and  stockhistorico.fecha = Convert(varchar,DATEADD(d," + vDias.ToString() + ",getdate()),103) and deposito_id = 0 and articulo.prove =" + codigo_proveedor + " and articulo.baja = 0 group by articulo.codigoprov,stockhistorico.fecha ";
                 SqlCommand sqlcommand = new SqlCommand(SelectString, Conection);
                 //System.Diagnostics.EventLog.WriteEntry("Servicio BDF", SelectString, EventLogEntryType.Information);
 
@@ -1322,7 +1322,7 @@ namespace BDFService
                 SelectString = SelectString + $" v.fecha = iv.fecha and v.empresa_id= iv.empresa_id left join motivo on v.motivodev = motivo.codigo  left join articulo art on ";
                 SelectString = SelectString + $" iv.cod_art=art.codigo inner join cliente cli on cli.codigo=v.cod_cli inner join ramo ";
                 SelectString = SelectString + $" on cli.ramo=ramo.codigo LEFT join Ramo_Vs_RamoBDF on Ramo_Vs_RamoBDF.codigo=ramo.codigo left join bdf_Tipos_Cliente on bdf_Tipos_Cliente.Id=Ramo_Vs_RamoBDF.IDBDF";
-                SelectString = SelectString + $" where TipoNum = 'BD' and v.fecha >= Convert(varchar,DATEADD(d,-33,getdate()),103) and left(v.comprobante, 2) in ('FA','NC','ND','PE') and art.prove =" + codigo_proveedor + "  and art.baja = 0 and fecha_factura is not null   ";
+                SelectString = SelectString + $" where TipoNum = 'BD' and v.fecha >= Convert(varchar,DATEADD(d," + vDias.ToString() + ",getdate()),103) and left(v.comprobante, 2) in ('FA','NC','ND','PE') and art.prove =" + codigo_proveedor + "  and art.baja = 0 and fecha_factura is not null   ";
                 SelectString = SelectString + $" group by v.fecha, v.comprobante, v.referencia, v.cod_cli, v.cod_ven, art.codigoprov, motivo.descripcion, bdf_Tipos_Cliente.Codigo having sum(iv.Cantidad_uni) <> 0 "; Debug.Write(SelectString);
                 SqlCommand sqlcommand = new SqlCommand(SelectString, Conection);
                 sqlcommand.CommandTimeout = 3600;
