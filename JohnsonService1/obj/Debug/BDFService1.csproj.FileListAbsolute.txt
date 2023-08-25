@@ -14,7 +14,4 @@ C:\Desarrollo\BDF-Service\JohnsonService1\obj\Debug\BDFService1.pdb
 C:\Desarrollo\BDF-Service\JohnsonService1\bin\Debug\BDFService1.exe
 C:\Desarrollo\BDF-Service\JohnsonService1\bin\Debug\BDFService1.pdb
 C:\Desarrollo\BDF-Service\JohnsonService1\obj\Debug\BDFService1.csproj.ResolveComReference.cache
-C:\Desarrollo\BDF-Service\JohnsonService1\obj\Debug\BDFService.ProjectInstaller.resources
-C:\Desarrollo\BDF-Service\JohnsonService1\obj\Debug\BDFService.SW.resources
-C:\Desarrollo\BDF-Service\JohnsonService1\obj\Debug\BDFService1.csproj.GenerateResource.cache
 C:\Desarrollo\BDF-Service\JohnsonService1\obj\Debug\BDFService1.csproj.CoreCompileInputs.cache
