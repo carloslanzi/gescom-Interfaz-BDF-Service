@@ -1382,9 +1382,12 @@ namespace BDFExport
                 SelectString = SelectString + $" v.fecha = iv.fecha and v.empresa_id= iv.empresa_id left join motivo on v.motivodev = motivo.codigo  left join articulo art on ";
                 SelectString = SelectString + $" iv.cod_art=art.codigo inner join cliente cli on cli.codigo=v.cod_cli inner join ramo ";
                 SelectString = SelectString + $" on cli.ramo=ramo.codigo LEFT join Ramo_Vs_RamoBDF on Ramo_Vs_RamoBDF.codigo=ramo.codigo left join bdf_Tipos_Cliente on bdf_Tipos_Cliente.Id=Ramo_Vs_RamoBDF.IDBDF left join vendedor ven on v.cod_ven=ven.codigo ";
-                SelectString = SelectString + $" where iv.cod_art<>'100000072' and TipoNum = 'BD' and v.fecha between '1/4/2023' and '30/4/2023'  and left(v.comprobante, 2) in ('FA','NC','ND','PE') and art.prove =" + codigo_proveedor + "  and art.baja = 0   ";
+                SelectString = SelectString + $" where iv.cod_art<>'100000072' and TipoNum = 'BD' and ";
+               // SelectString = SelectString + $"    v.fecha between '1/9/2023' and '30/9/2023' ";
+                SelectString = SelectString + $"    v.fecha = Convert(varchar,DATEADD(d," + vDias.ToString() + ",getdate()),103) ";
+                SelectString = SelectString + $" and left(v.comprobante, 2) in ('FA','NC','ND','PE') and art.prove =" + codigo_proveedor + "  and art.baja = 0   ";
                 SelectString = SelectString + $" group by ven.nombre, ven.nombre, v.fecha, v.comprobante, v.referencia, v.cod_cli, v.cod_ven, art.codigoprov, motivo.descripcion, bdf_Tipos_Cliente.Codigo having sum(iv.Cantidad_uni) <> 0 "; Debug.Write(SelectString);
-                ' v.fecha = Convert(varchar,DATEADD(d," + vDias.ToString() + ",getdate()),103) 
+                //' 
 
                 SqlCommand sqlcommand = new SqlCommand(SelectString, Conection);
                 sqlcommand.CommandTimeout = 3600;
