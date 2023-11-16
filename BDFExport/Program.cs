@@ -1163,7 +1163,8 @@ namespace BDFExport
                 Conection.Open();
 
                 // Utilizar una variable para almacenar la instrucción SQL.
-                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) IdDistribuidor, (select num.numero+1 from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and num.empresa_id=1) IdPaquete,   articulo.codigoprov IdProducto, 'PC' UnidadMedida,convert(varchar,stockhistorico.fecha,23) fecha , 1 tipoinventario,'UNI'Deposito, case when sum(stocktot) > 0 then round(sum(cast(cast(stocktot as numeric(18,2)) as numeric(18,2))),0) else 0 end cantidad from stockhistorico, articulo  where articulo.codigo<>'100000072' and stockhistorico.Articulo_Codigo= articulo.codigo and  stockhistorico.fecha = Convert(varchar,DATEADD(d," + vDias.ToString() + ",getdate()),103) and deposito_id = 0 and articulo.prove =" + codigo_proveedor + " and articulo.baja = 0 group by articulo.codigoprov,stockhistorico.fecha ";
+                //string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) IdDistribuidor, (select num.numero+1 from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and num.empresa_id=1) IdPaquete,   articulo.codigoprov IdProducto, 'PC' UnidadMedida,convert(varchar,stockhistorico.fecha,23) fecha , 1 tipoinventario,'UNI'Deposito, case when sum(stocktot) > 0 then round(sum(cast(cast(stocktot as numeric(18,2)) as numeric(18,2))),0) else 0 end cantidad from stockhistorico, articulo  where articulo.codigo<>'100000072' and stockhistorico.Articulo_Codigo= articulo.codigo and  stockhistorico.fecha = Convert(varchar,DATEADD(d," + vDias.ToString() + ",getdate()),103) and deposito_id = 0 and articulo.prove =" + codigo_proveedor + " and articulo.baja = 0 group by articulo.codigoprov,stockhistorico.fecha ";
+                string SelectString = "select (select codigo_distribuidor from BDF_Configuracion where codigo = 1) IdDistribuidor, (select num.numero+1 from numeracion as num  where num.sucursal=1 and num.tiponum='BD' and num.letra='X' and num.empresa_id=1) IdPaquete,   articulo.codigoprov IdProducto, 'PC' UnidadMedida,convert(varchar,stockhistorico.fecha,23) fecha , 1 tipoinventario,'UNI'Deposito, case when sum(stocktot) > 0 then round(sum(cast(cast(stocktot as numeric(18,2)) as numeric(18,2))),0) else 0 end cantidad from stockhistorico, articulo  where articulo.codigo<>'100000072' and stockhistorico.Articulo_Codigo= articulo.codigo and  stockhistorico.fecha = '31/5/2023' and deposito_id = 0 and articulo.prove =" + codigo_proveedor + " and articulo.baja = 0 group by articulo.codigoprov,stockhistorico.fecha ";
                 SqlCommand sqlcommand = new SqlCommand(SelectString, Conection);
                 //System.Diagnostics.EventLog.WriteEntry("Servicio BDF", SelectString, EventLogEntryType.Information);
 
@@ -1383,9 +1384,10 @@ namespace BDFExport
                 SelectString = SelectString + $" iv.cod_art=art.codigo inner join cliente cli on cli.codigo=v.cod_cli inner join ramo ";
                 SelectString = SelectString + $" on cli.ramo=ramo.codigo LEFT join Ramo_Vs_RamoBDF on Ramo_Vs_RamoBDF.codigo=ramo.codigo left join bdf_Tipos_Cliente on bdf_Tipos_Cliente.Id=Ramo_Vs_RamoBDF.IDBDF left join vendedor ven on v.cod_ven=ven.codigo ";
                 SelectString = SelectString + $" where iv.cod_art<>'100000072' and TipoNum = 'BD' and ";
-               // SelectString = SelectString + $"    v.fecha between '1/9/2023' and '30/9/2023' ";
-                SelectString = SelectString + $"   v.fecha_factura is not null and  v.fecha = Convert(varchar,DATEADD(d," + vDias.ToString() + ",getdate()),103) ";
-                SelectString = SelectString + $" and left(v.comprobante, 2) in ('FA','NC','ND','PE') and art.prove =" + codigo_proveedor + "  and art.baja = 0   ";
+                 SelectString = SelectString + $"    v.fecha between '1/5/2023' and '31/5/2023' and ";
+                //SelectString = SelectString + "$ v.fecha = Convert(varchar,DATEADD(d," + vDias.ToString() + ",getdate()),103) and ";
+                SelectString = SelectString + $"   v.fecha_factura is not null and ";
+                SelectString = SelectString + $"  left(v.comprobante, 2) in ('FA','NC','ND','PE') and art.prove =" + codigo_proveedor + "  and art.baja = 0   ";
                 SelectString = SelectString + $" group by ven.nombre, ven.nombre, v.fecha, v.comprobante, v.referencia, v.cod_cli, v.cod_ven, art.codigoprov, motivo.descripcion, bdf_Tipos_Cliente.Codigo having sum(iv.Cantidad_uni) <> 0 "; Debug.Write(SelectString);
                 //' 
 
